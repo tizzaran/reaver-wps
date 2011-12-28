@@ -20,6 +20,9 @@ int main(int argc, char **argv)
 	globule_init();
 	init_default_settings();
 
+	fprintf(stderr, "\nReaver v%s WiFi Protected Setup Attack Tool\n", PACKAGE_VERSION);
+	fprintf(stderr, "Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>\n\n");
+
 	if(argc < 2)
 	{
 		ret_val = usage(argv[0]);
@@ -107,9 +110,7 @@ int usage(char *prog_name)
 
         fail_timeout = ((float) M57_DEFAULT_TIMEOUT / (float) SEC_TO_US);
 
-        fprintf(stderr, "\nReaver v%s\n", PACKAGE_VERSION);
-
-        fprintf(stderr, "\nRequired Arguments:\n");
+        fprintf(stderr, "Required Arguments:\n");
         fprintf(stderr, "\t-i, --interface=<wlan>          Name of the monitor-mode interface to use\n");
         fprintf(stderr, "\t-b, --bssid=<mac>               BSSID of the target AP\n");
 
