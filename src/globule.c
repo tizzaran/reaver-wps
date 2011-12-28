@@ -1,10 +1,15 @@
-#include "globule.h"
-
-/* 
- * Reaver "watermark". md5("TNS").
- * Since both reaver and walsh use globule.c, and any future binaries will likely need access to globule.c as well, this seemed like a good place to put it... 
+/*
+ * Reaver - Global variable access functions
+ * Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * See README and LICENSE for more details.
  */
-unsigned char marker[] = "\xe3\x0f\x55\x5e\x5a\x24\xf0\x76\xa5\xd5\xbe\x70\xa4\x62\x52\x70";
+
+#include "globule.h"
 
 int globule_init()
 {
