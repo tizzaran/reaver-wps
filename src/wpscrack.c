@@ -119,7 +119,6 @@ int usage(char *prog_name)
         fprintf(stderr, "\t-e, --essid=<ssid>              ESSID of the target AP\n");
         fprintf(stderr, "\t-c, --channel=<channel>         Set the 802.11 channel for the interface (implies -f)\n");
 	fprintf(stderr, "\t-o, --out-file=<file>           Send output to a log file [stdout]\n");
-	fprintf(stderr, "\t-a, --auto                      Auto detect the best advanced options for the target AP\n");
         fprintf(stderr, "\t-f, --fixed                     Disable channel hopping\n");
         fprintf(stderr, "\t-5, --5ghz                      Use 5GHz 802.11 channels\n");
         fprintf(stderr, "\t-v, --verbose                   Display non-critical warnings (-vv for more)\n");

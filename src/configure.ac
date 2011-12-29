@@ -1,4 +1,4 @@
-AC_INIT(reaver, 1.0)
+AC_INIT(reaver, 1.1)
 
 AC_PROG_CC
 AC_LANG(C)

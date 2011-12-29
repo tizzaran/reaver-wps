@@ -558,11 +558,14 @@ static void wps_registrar_expire_pins(struct wps_registrar *reg)
 	os_get_time(&now);
 	dl_list_for_each_safe(pin, prev, &reg->pins, struct wps_uuid_pin, list)
 	{
-		if ((pin->flags & PIN_EXPIRES) &&
-		    os_time_before(&pin->expiration, &now)) {
-			wpa_hexdump(MSG_DEBUG, "WPS: Expired PIN for UUID",
-				    pin->uuid, WPS_UUID_LEN);
-			wps_remove_pin(pin);
+		if(pin != NULL)
+		{
+			if ((pin->flags & PIN_EXPIRES) &&
+			    os_time_before(&pin->expiration, &now)) {
+				wpa_hexdump(MSG_DEBUG, "WPS: Expired PIN for UUID",
+					    pin->uuid, WPS_UUID_LEN);
+				wps_remove_pin(pin);
+			}
 		}
 	}
 }

@@ -19,7 +19,7 @@ int process_arguments(int argc, char **argv)
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:5aELfnqvDh";
+	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:5ELfnqvDh";
 	struct option long_options[] = {
 		{ "interface", required_argument, NULL, 'i' },
 		{ "bssid", required_argument, NULL, 'b' },
@@ -36,7 +36,6 @@ int process_arguments(int argc, char **argv)
 		{ "max-attempts", required_argument, NULL, 'g' },
 		{ "out-file", required_argument, NULL, 'o' },
 		{ "eap-terminate", no_argument, NULL, 'E' },
-		{ "auto", no_argument, NULL, 'a' },
 		{ "fixed", no_argument, NULL, 'f' },
 		{ "daemonize", no_argument, NULL, 'D' },
 		{ "5ghz", no_argument, NULL, '5' },
@@ -102,9 +101,6 @@ int process_arguments(int argc, char **argv)
                         case 'g':
                                 set_max_pin_attempts(atoi(optarg));
                                 break;
-			case 'a':
-				set_auto_detect_options(1);
-				break;
                         case 'D':
 				daemonize();
 				break;
