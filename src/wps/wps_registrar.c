@@ -1615,7 +1615,7 @@ static struct wpabuf * wps_build_wsc_nack(struct wps_data *wps)
 struct wpabuf * wps_registrar_get_msg(struct wps_data *wps,
 				      enum wsc_op_code *op_code)
 {
-	struct wpabuf *msg;
+	struct wpabuf *msg = NULL;
 
 #ifdef CONFIG_WPS_UPNP
 	if (!wps->int_reg && wps->wps->wps_upnp) {
@@ -1661,6 +1661,8 @@ static struct wpabuf * wps_build_m2(struct wps_data *wps);	//wps/wps_registrar.c
 	}
 #endif /* CONFIG_WPS_UPNP */
 
+if(wps->wps->registrar != NULL)
+{
 	switch (wps->state) {
 	case SEND_M2:
 		if (wps_get_dev_password(wps) < 0)
@@ -1709,6 +1711,7 @@ static struct wpabuf * wps_build_m2(struct wps_data *wps);	//wps/wps_registrar.c
 		msg = NULL;
 		break;
 	}
+}
 
 	if (*op_code == WSC_MSG && msg) {
 		/* Save a copy of the last message for Authenticator derivation
