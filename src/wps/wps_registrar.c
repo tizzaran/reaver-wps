@@ -508,6 +508,9 @@ int wps_registrar_add_pin(struct wps_registrar *reg, const u8 *uuid,
 {
 	struct wps_uuid_pin *p;
 
+	if(reg == NULL)
+		return -1;
+
 	p = os_zalloc(sizeof(*p));
 	if (p == NULL)
 		return -1;
@@ -584,6 +587,9 @@ int wps_registrar_invalidate_pin(struct wps_registrar *reg, const u8 *uuid)
 {
 	struct wps_uuid_pin *pin, *prev;
 
+	if(reg == NULL)
+		return -1;
+
 	dl_list_for_each_safe(pin, prev, &reg->pins, struct wps_uuid_pin, list)
 	{
 		if (os_memcmp(pin->uuid, uuid, WPS_UUID_LEN) == 0) {
@@ -602,6 +608,9 @@ static const u8 * wps_registrar_get_pin(struct wps_registrar *reg,
 					const u8 *uuid, size_t *pin_len)
 {
 	struct wps_uuid_pin *pin, *found = NULL;
+
+	if(reg == NULL)
+		return NULL;
 
 	wps_registrar_expire_pins(reg);
 
@@ -881,12 +890,18 @@ static void wps_cb_reg_success(struct wps_registrar *reg, const u8 *mac_addr,
 static int wps_cb_set_ie(struct wps_registrar *reg, struct wpabuf *beacon_ie,
 			 struct wpabuf *probe_resp_ie)
 {
+	if(reg == NULL)
+		return 0;
+
 	return reg->set_ie_cb(reg->cb_ctx, beacon_ie, probe_resp_ie);
 }
 
 
 static void wps_cb_set_sel_reg(struct wps_registrar *reg)
 {
+	if(reg == NULL)
+		return;
+
 	wpa_printf(MSG_DEBUG, "WPS: Enter wps_cg_set_sel_reg");
 	u16 methods = 0;
 	if (reg->set_sel_reg_cb == NULL)
