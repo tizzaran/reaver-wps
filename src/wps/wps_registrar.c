@@ -660,15 +660,18 @@ int wps_registrar_unlock_pin(struct wps_registrar *reg, const u8 *uuid)
 {
 	struct wps_uuid_pin *pin;
 
-	dl_list_for_each(pin, &reg->pins, struct wps_uuid_pin, list) {
-		if (os_memcmp(pin->uuid, uuid, WPS_UUID_LEN) == 0) {
-			if (pin->wildcard_uuid == 2) {
-				wpa_printf(MSG_DEBUG, "WPS: Invalidating used "
-					   "wildcard PIN");
-				return wps_registrar_invalidate_pin(reg, uuid);
+	if(reg != NULL)
+	{
+		dl_list_for_each(pin, &reg->pins, struct wps_uuid_pin, list) {
+			if (os_memcmp(pin->uuid, uuid, WPS_UUID_LEN) == 0) {
+				if (pin->wildcard_uuid == 2) {
+					wpa_printf(MSG_DEBUG, "WPS: Invalidating used "
+						   "wildcard PIN");
+					return wps_registrar_invalidate_pin(reg, uuid);
+				}
+				pin->flags &= ~PIN_LOCKED;
+				return 0;
 			}
-			pin->flags &= ~PIN_LOCKED;
-			return 0;
 		}
 	}
 
@@ -678,9 +681,12 @@ int wps_registrar_unlock_pin(struct wps_registrar *reg, const u8 *uuid)
 
 static void wps_registrar_stop_pbc(struct wps_registrar *reg)
 {
-	reg->selected_registrar = 0;
-	reg->pbc = 0;
-	wps_registrar_selected_registrar_changed(reg);
+	if(reg != NULL)
+	{
+		reg->selected_registrar = 0;
+		reg->pbc = 0;
+		wps_registrar_selected_registrar_changed(reg);
+	}
 }
 
 
@@ -688,9 +694,12 @@ static void wps_registrar_pbc_timeout(void *eloop_ctx, void *timeout_ctx)
 {
 	struct wps_registrar *reg = eloop_ctx;
 
-	wpa_printf(MSG_DEBUG, "WPS: PBC timed out - disable PBC mode");
-	wps_pbc_timeout_event(reg->wps);
-	wps_registrar_stop_pbc(reg);
+	if(reg != NULL)
+	{
+		wpa_printf(MSG_DEBUG, "WPS: PBC timed out - disable PBC mode");
+		wps_pbc_timeout_event(reg->wps);
+		wps_registrar_stop_pbc(reg);
+	}
 }
 
 
@@ -705,6 +714,9 @@ static void wps_registrar_pbc_timeout(void *eloop_ctx, void *timeout_ctx)
  */
 int wps_registrar_button_pushed(struct wps_registrar *reg)
 {
+	if(reg == NULL)
+		return -1;
+
 	if (wps_registrar_pbc_overlap(reg, NULL, NULL)) {
 		wpa_printf(MSG_DEBUG, "WPS: PBC overlap - do not start PBC "
 			   "mode");
@@ -726,18 +738,24 @@ int wps_registrar_button_pushed(struct wps_registrar *reg)
 
 static void wps_registrar_pbc_completed(struct wps_registrar *reg)
 {
-	wpa_printf(MSG_DEBUG, "WPS: PBC completed - stopping PBC mode");
-	eloop_cancel_timeout(wps_registrar_pbc_timeout, reg, NULL);
-	wps_registrar_stop_pbc(reg);
+	if(reg != NULL)
+	{
+		wpa_printf(MSG_DEBUG, "WPS: PBC completed - stopping PBC mode");
+		eloop_cancel_timeout(wps_registrar_pbc_timeout, reg, NULL);
+		wps_registrar_stop_pbc(reg);
+	}
 }
 
 
 static void wps_registrar_pin_completed(struct wps_registrar *reg)
 {
-	wpa_printf(MSG_DEBUG, "WPS: PIN completed using internal Registrar");
-	eloop_cancel_timeout(wps_registrar_set_selected_timeout, reg, NULL);
-	reg->selected_registrar = 0;
-	wps_registrar_selected_registrar_changed(reg);
+	if(reg != NULL)
+	{
+		wpa_printf(MSG_DEBUG, "WPS: PIN completed using internal Registrar");
+		eloop_cancel_timeout(wps_registrar_set_selected_timeout, reg, NULL);
+		reg->selected_registrar = 0;
+		wps_registrar_selected_registrar_changed(reg);
+	}
 }
 
 
@@ -755,6 +773,9 @@ void wps_registrar_probe_req_rx(struct wps_registrar *reg, const u8 *addr,
 				const struct wpabuf *wps_data)
 {
 	struct wps_parse_attr attr;
+
+	if(reg == NULL)
+		return;
 
 	wpa_hexdump_buf(MSG_MSGDUMP,
 			"WPS: Probe Request with WPS data received",
@@ -821,6 +842,9 @@ void wps_registrar_probe_req_rx(struct wps_registrar *reg, const u8 *addr,
 static int wps_cb_new_psk(struct wps_registrar *reg, const u8 *mac_addr,
 			  const u8 *psk, size_t psk_len)
 {
+	if(reg == NULL)
+		return 0;
+
 	if (reg->new_psk_cb == NULL)
 		return 0;
 
@@ -831,6 +855,9 @@ static int wps_cb_new_psk(struct wps_registrar *reg, const u8 *mac_addr,
 static void wps_cb_pin_needed(struct wps_registrar *reg, const u8 *uuid_e,
 			      const struct wps_device_data *dev)
 {
+	if(reg == NULL)
+		return;
+
 	if (reg->pin_needed_cb == NULL)
 		return;
 
@@ -841,6 +868,9 @@ static void wps_cb_pin_needed(struct wps_registrar *reg, const u8 *uuid_e,
 static void wps_cb_reg_success(struct wps_registrar *reg, const u8 *mac_addr,
 			       const u8 *uuid_e)
 {
+	if(reg == NULL)
+		return;
+
 	if (reg->reg_success_cb == NULL)
 		return;
 
