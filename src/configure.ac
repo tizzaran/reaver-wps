@@ -3,6 +3,7 @@ AC_INIT(reaver, 1.0)
 AC_PROG_CC
 AC_LANG(C)
 
+ARGCFLAGS="-Wall $CFLAGS"
 CFLAGS="-Wall -fpack-struct $CFLAGS"
 CONFDIR="/etc"
 
@@ -11,6 +12,7 @@ AC_CHECK_LIB(pcap, pcap_open_live, [], [echo "error: pcap library not found!"; e
 AC_DEFINE_UNQUOTED(CONF_DIR, "${CONFDIR}/${PACKAGE_NAME}")
 cp confdefs.h config.h
 
+AC_SUBST(ARGCFLAGS, $ARGCFLAGS)
 AC_SUBST(confdir, $CONFDIR)
 AC_SUBST(target, $PACKAGE_NAME)
 AC_OUTPUT(Makefile)
