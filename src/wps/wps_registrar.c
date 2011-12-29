@@ -417,6 +417,11 @@ static int wps_build_config_methods_r(struct wps_registrar *reg,
 				      struct wpabuf *msg)
 {
 	u16 methods;
+	if(reg == NULL)
+	{
+		return 0;
+	}
+
 	methods = reg->wps->config_methods & ~WPS_CONFIG_PUSHBUTTON;
 	if (reg->pbc)
 		methods |= WPS_CONFIG_PUSHBUTTON;
@@ -1054,8 +1059,11 @@ static int wps_get_dev_password(struct wps_data *wps)
 	if (pin == NULL) {
 		wpa_printf(MSG_DEBUG, "WPS: No Device Password available for "
 			   "the Enrollee");
-		wps_cb_pin_needed(wps->wps->registrar, wps->uuid_e,
-				  &wps->peer_dev);
+		if(wps->wps->registrar != NULL)
+		{
+			wps_cb_pin_needed(wps->wps->registrar, wps->uuid_e,
+					  &wps->peer_dev);
+		}
 		return -1;
 	}
 
@@ -1661,8 +1669,6 @@ static struct wpabuf * wps_build_m2(struct wps_data *wps);	//wps/wps_registrar.c
 	}
 #endif /* CONFIG_WPS_UPNP */
 
-if(wps->wps->registrar != NULL)
-{
 	switch (wps->state) {
 	case SEND_M2:
 		if (wps_get_dev_password(wps) < 0)
@@ -1711,7 +1717,6 @@ if(wps->wps->registrar != NULL)
 		msg = NULL;
 		break;
 	}
-}
 
 	if (*op_code == WSC_MSG && msg) {
 		/* Save a copy of the last message for Authenticator derivation
