@@ -324,7 +324,7 @@ int associate_recv_loop()
 
                 if(header.len >= MIN_AUTH_SIZE)
                 {
-			rt_header = (struct radio_tap_header *) packet;
+			rt_header = (struct radio_tap_header *) radio_header(packet, header.len);
                         dot11_frame = (struct dot11_frame_header *) (packet + rt_header->len);
 
                         if((memcmp(dot11_frame->addr3, get_bssid(), MAC_ADDR_LEN) == 0) &&
@@ -332,8 +332,8 @@ int associate_recv_loop()
                         {
 				if(dot11_frame->fc.type == MANAGEMENT_FRAME)
 				{
-                                	auth_frame = (struct authentication_management_frame *) (packet + sizeof(struct dot11_frame_header));
-                                	assoc_frame = (struct association_response_management_frame *) (packet + sizeof(struct dot11_frame_header));
+                                	auth_frame = (struct authentication_management_frame *) (packet + sizeof(struct dot11_frame_header) + rt_header->len);
+                                	assoc_frame = (struct association_response_management_frame *) (packet + sizeof(struct dot11_frame_header) + rt_header->len);
 
 					/* Did we get an authentication packet with a successful status? */
 					if((dot11_frame->fc.sub_type == SUBTYPE_AUTHENTICATION) && (auth_frame->status == AUTHENTICATION_SUCCESS))
