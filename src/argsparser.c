@@ -131,6 +131,7 @@ int process_arguments(int argc, char **argv)
 void init_default_settings(void)
 {
 	set_log_file(stdout);
+	set_max_pin_attempts(P1_SIZE + P2_SIZE);
         set_delay(DEFAULT_DELAY);
         set_lock_delay(DEFAULT_LOCK_DELAY);
         set_debug(INFO);
