@@ -156,6 +156,7 @@ enum rt_header_flags
 	SSI_FLAG = 0x20,
 };
 
+#pragma pack(1)
 struct radio_tap_header
 {
 	uint8_t revision;	
@@ -254,6 +255,7 @@ struct tagged_parameter
 	uint8_t number;
 	uint8_t len;
 };
+#pragma pack()
 
 #define MIN_BEACON_SIZE		(sizeof(struct radio_tap_header) + sizeof(struct dot11_frame_header) + sizeof(struct beacon_management_frame))
 
