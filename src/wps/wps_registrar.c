@@ -1669,6 +1669,8 @@ static struct wpabuf * wps_build_m2(struct wps_data *wps);	//wps/wps_registrar.c
 	}
 #endif /* CONFIG_WPS_UPNP */
 
+if(wps->wps->registrar != NULL)
+{
 	switch (wps->state) {
 	case SEND_M2:
 		if (wps_get_dev_password(wps) < 0)
@@ -1717,6 +1719,7 @@ static struct wpabuf * wps_build_m2(struct wps_data *wps);	//wps/wps_registrar.c
 		msg = NULL;
 		break;
 	}
+}
 
 	if (*op_code == WSC_MSG && msg) {
 		/* Save a copy of the last message for Authenticator derivation
