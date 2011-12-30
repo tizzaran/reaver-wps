@@ -56,7 +56,7 @@ struct wps_data *initialize_wps_data()
 	wpsconf->wps->registrar = wps_registrar_init(wpsconf->wps, (const struct wps_registrar_config *) reg_conf);
 	if(wpsconf->wps->registrar == NULL)
 	{
-		cprintf(CRITICAL, "[x] ERROR: Failed to initialize registrar structure!\n");
+		cprintf(CRITICAL, "[X] ERROR: Failed to initialize registrar structure!\n");
 	}
 
 	/* 
