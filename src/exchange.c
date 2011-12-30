@@ -100,7 +100,7 @@ enum wps_result do_wps_exchange()
 			default:
 				if(packet_type != 0)
 				{
-					cprintf(VERBOSE, "[!] Warning: Out of order packet received, re-trasmitting last message\n");
+					cprintf(VERBOSE, "[!] WARNING: Out of order packet received, re-trasmitting last message\n");
 					send_msg();
 				}
 				break;

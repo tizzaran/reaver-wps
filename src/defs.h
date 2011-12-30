@@ -92,6 +92,14 @@
 #define CHANNEL_SIZE 		4
 #define FHSS_SIZE 		2
 
+#define WPS_DEVICE_NAME		"Glau"
+#define WPS_MANUFACTURER	"Microsoft"
+#define WPS_MODEL_NAME		"Windows"
+#define WPS_MODEL_NUMBER	"6.1.7601"
+#define WPS_DEVICE_TYPE		"\x00\x01\x00\x50\xF2\x04\x00\x01"
+#define WPS_OS_VERSION		"\x01\x00\x06\x00"
+#define WPS_RF_BANDS		0x01
+
 enum encryption_type
 {
         NONE,
