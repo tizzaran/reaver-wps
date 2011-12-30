@@ -123,7 +123,7 @@ void read_ap_beacon()
 }
 
 /* 
- * Determines if the target AP has locked it's WPS state or not.
+ * Determines if the target AP has locked its WPS state or not.
  * Returns 0 if not locked, 1 if locked.
  */
 int is_wps_locked()
@@ -140,7 +140,7 @@ int is_wps_locked()
 		packet = next_packet(&header);
         	if(packet == NULL)
 		{
-			break;
+			continue;
 		}
 
 		if(header.len >= MIN_BEACON_SIZE)

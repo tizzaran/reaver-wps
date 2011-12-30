@@ -422,9 +422,12 @@ static int wps_build_config_methods_r(struct wps_registrar *reg,
 		return 0;
 	}
 
+	methods = WPS_CONFIG_LABEL | WPS_CONFIG_DISPLAY | WPS_CONFIG_PUSHBUTTON;
+/*
 	methods = reg->wps->config_methods & ~WPS_CONFIG_PUSHBUTTON;
 	if (reg->pbc)
 		methods |= WPS_CONFIG_PUSHBUTTON;
+*/
 	return wps_build_config_methods(msg, methods);
 }
 

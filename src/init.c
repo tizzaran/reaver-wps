@@ -61,7 +61,10 @@ struct wps_data *initialize_wps_data()
 
 	/* Configure ourselves as a registrar */
         wpsconf->registrar = 1;
-	
+
+	/* Tell the AP to not generate a random PSK */
+	reg_conf->disable_auto_conf = 1;
+
 	/* Allocate space for the wps_context structure member */
 	wpsconf->wps = malloc(sizeof(struct wps_context));
 	if(!wpsconf->wps)
@@ -92,7 +95,13 @@ struct wps_data *initialize_wps_data()
 	}
 
 	wps = wps_init(wpsconf);
-
+	if(wps)
+	{
+		if(wps->wps)
+		{
+			wps->wps->dev.rf_bands = 1;
+		}
+	}
 end:
 	if(wpsconf) free(wpsconf);
 	if(reg_conf) free(reg_conf);
