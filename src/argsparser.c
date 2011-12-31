@@ -41,7 +41,7 @@ int process_arguments(int argc, char **argv)
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:5ELfnqvDh";
+	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:5ELfnqvDh";
 	struct option long_options[] = {
 		{ "interface", required_argument, NULL, 'i' },
 		{ "bssid", required_argument, NULL, 'b' },
@@ -57,6 +57,7 @@ int process_arguments(int argc, char **argv)
 		{ "recurring-delay", required_argument, NULL, 'r' },
 		{ "max-attempts", required_argument, NULL, 'g' },
 		{ "out-file", required_argument, NULL, 'o' },
+		{ "pin", required_argument, NULL, 'p' },
 		{ "eap-terminate", no_argument, NULL, 'E' },
 		{ "fixed", no_argument, NULL, 'f' },
 		{ "daemonize", no_argument, NULL, 'D' },
@@ -108,6 +109,9 @@ int process_arguments(int argc, char **argv)
                         case 'l':
                                 set_lock_delay(atoi(optarg));
                                 break;
+			case 'p':
+				parse_static_pin(optarg);
+				break;
                         case 'L':
                                 set_ignore_locks(1);
                                 break;
@@ -182,3 +186,28 @@ void parse_recurring_delay(char *arg)
         free(x);
 }
 
+/* Parse the WPS pin to use into p1 and p2 */
+void parse_static_pin(char *pin)
+{
+	int len = 0;
+	char p1[5] = { 0 };
+	char p2[4] = { 0 };
+
+	if(pin)
+	{
+		len = strlen(pin);
+
+		if(len == 7 || len == 8)
+		{
+			memcpy((void *) &p1, pin, sizeof(p1)-1);
+			set_static_p1((char *) &p1);
+
+			memcpy((void *) &p2, pin+sizeof(p1)-1, sizeof(p2)-1);
+			set_static_p2((char *) &p2);
+		}
+		else
+		{
+			cprintf(CRITICAL, "[X] ERROR: Invalid pin specified! Ignoring '%s'.\n", pin);
+		}
+	}
+}

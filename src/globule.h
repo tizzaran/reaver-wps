@@ -48,6 +48,10 @@ struct globals
 
         char *p2[P2_SIZE];              /* Array of all possible values for the second half of the pin */
 
+	char *static_p1;		/* Static P1, as supplied by the user */
+	
+	char *static_p2;		/* Static P2, as supplied by the user */
+
         enum key_state key_status;      /* Indicates the status of the key cracking: KEY1_WIP | KEY2_WIP | KEY_DONE */
 
         int delay;                      /* Seconds to sleep in between key attempts */
@@ -194,6 +198,10 @@ void set_iface(char *value);
 char *get_iface();
 void set_pin(char *value);
 char *get_pin();
+void set_static_p1(char *value);
+char *get_static_p1(void);
+void set_static_p2(char *value);
+char *get_static_p2(void);
 void set_nack_reason(enum nack_code value);
 enum nack_code get_nack_reason();
 void set_handle(pcap_t *value);

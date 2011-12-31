@@ -94,27 +94,45 @@ void randomize_pins()
 
         while(i < P1_SIZE)
         {
-                index = (rand() % P1_SIZE);
+		if(get_static_p1())
+		{
+			set_p1(i, get_static_p1());
+			k1[index].randomized = 1;
+			i++;
+		}
+		else
+		{
+                	index = (rand() % P1_SIZE);
 
-                if(!k1[index].randomized)
-                {
-                        set_p1(i, k1[index].key);
-                        k1[index].randomized = 1;
-                        i++;
-                }
+                	if(!k1[index].randomized)
+                	{
+                	        set_p1(i, k1[index].key);
+                	        k1[index].randomized = 1;
+                	        i++;
+                	}
+		}
         }
 
         i = 0;
 
         while(i < P2_SIZE)
         {
-                index = (rand() % P2_SIZE);
+		if(get_static_p2())
+		{
+			set_p2(i, get_static_p2());
+			k2[index].randomized = 1;
+			i++;
+		}
+		else
+		{
+                	index = (rand() % P2_SIZE);
 
-                if(!k2[index].randomized)
-                {
-                        set_p2(i, k2[index].key);
-                        k2[index].randomized = 1;
-                        i++;
+                	if(!k2[index].randomized)
+                	{
+                	        set_p2(i, k2[index].key);
+                	        k2[index].randomized = 1;
+                	        i++;
+			}
                 }
         }
 

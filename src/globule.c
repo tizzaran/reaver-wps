@@ -66,6 +66,8 @@ void globule_deinit()
 		if(globule->pin) free(globule->pin);
 		if(globule->iface) free(globule->iface);
 		if(globule->ssid) free(globule->ssid);
+		if(globule->static_p1) free(globule->static_p1);
+		if(globule->static_p2) free(globule->static_p2);
 		if(globule->fp) fclose(globule->fp);
 	
 		free(globule);
@@ -439,6 +441,26 @@ void set_pin(char *value)
 char *get_pin()
 {
 	return globule->pin;
+}
+
+void set_static_p1(char *value)
+{
+	globule->static_p1 = strdup(value);
+}
+
+char *get_static_p1(void)
+{
+	return globule->static_p1;
+}
+
+void set_static_p2(char *value)
+{
+	globule->static_p2 = strdup(value);
+}
+
+char *get_static_p2(void)
+{
+	return globule->static_p2;
 }
 
 void set_nack_reason(enum nack_code value)
