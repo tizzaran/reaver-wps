@@ -463,6 +463,16 @@ char *get_static_p2(void)
 	return globule->static_p2;
 }
 
+void set_win7_compat(int value)
+{
+	globule->win7_compat = value;
+}
+
+int get_win7_compat(void)
+{
+	return globule->win7_compat;
+}
+
 void set_nack_reason(enum nack_code value)
 {
 	globule->nack_reason = value;

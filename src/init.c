@@ -97,7 +97,8 @@ struct wps_data *initialize_wps_data()
 	wps = wps_init(wpsconf);
 	if(wps)
 	{
-		if(wps->wps)
+		/* Report that we are a Windows 7 registrar, if --win7 was specified on the command line */
+		if(wps->wps && get_win7_compat())
 		{
 			wps->wps->dev.device_name = WPS_DEVICE_NAME;
 			wps->wps->dev.manufacturer = WPS_MANUFACTURER;

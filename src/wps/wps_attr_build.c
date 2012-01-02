@@ -222,8 +222,8 @@ int wps_build_conn_type_flags(struct wps_data *wps, struct wpabuf *msg)
 	wpa_printf(MSG_DEBUG, "WPS:  * Connection Type Flags");
 	wpabuf_put_be16(msg, ATTR_CONN_TYPE_FLAGS);
 	wpabuf_put_be16(msg, 1);
-//	wpabuf_put_u8(msg, WPS_CONN_ESS);
-	wpabuf_put_u8(msg, WPS_CONN_ESS | WPS_CONN_IBSS);
+	wpabuf_put_u8(msg, WPS_CONN_ESS);
+//	wpabuf_put_u8(msg, WPS_CONN_ESS | WPS_CONN_IBSS);
 	return 0;
 }
 
@@ -233,8 +233,8 @@ int wps_build_assoc_state(struct wps_data *wps, struct wpabuf *msg)
 	wpa_printf(MSG_DEBUG, "WPS:  * Association State");
 	wpabuf_put_be16(msg, ATTR_ASSOC_STATE);
 	wpabuf_put_be16(msg, 2);
-//	wpabuf_put_be16(msg, WPS_ASSOC_NOT_ASSOC);
-	wpabuf_put_be16(msg, WPS_ASSOC_CONN_SUCCESS);
+	wpabuf_put_be16(msg, WPS_ASSOC_NOT_ASSOC);
+//	wpabuf_put_be16(msg, WPS_ASSOC_CONN_SUCCESS);
 	return 0;
 }
 

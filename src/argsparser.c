@@ -41,7 +41,7 @@ int process_arguments(int argc, char **argv)
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:5ELfnqvDh";
+	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:5ELfnqvDhw";
 	struct option long_options[] = {
 		{ "interface", required_argument, NULL, 'i' },
 		{ "bssid", required_argument, NULL, 'b' },
@@ -65,6 +65,7 @@ int process_arguments(int argc, char **argv)
 		{ "nack", no_argument, NULL, 'n' },
 		{ "quiet", no_argument, NULL, 'q' },
 		{ "verbose", no_argument, NULL, 'v' },
+		{ "win7", no_argument, NULL, 'w' },
 		{ "help", no_argument, NULL, 'h' },
 		{ 0, 0, 0, 0 }
 	};
@@ -145,6 +146,9 @@ int process_arguments(int argc, char **argv)
                         case 'q':
                                 set_debug(CRITICAL);
                                 break;
+			case 'w':
+				set_win7_compat(1);
+				break;
                         default:
                                 ret_val = EXIT_FAILURE;
                 }
