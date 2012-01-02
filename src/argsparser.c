@@ -197,13 +197,16 @@ void parse_static_pin(char *pin)
 	{
 		len = strlen(pin);
 
-		if(len == 7 || len == 8)
+		if(len == 4 || len == 7 || len == 8)
 		{
 			memcpy((void *) &p1, pin, sizeof(p1)-1);
 			set_static_p1((char *) &p1);
 
-			memcpy((void *) &p2, pin+sizeof(p1)-1, sizeof(p2)-1);
-			set_static_p2((char *) &p2);
+			if(len > 4)
+			{
+				memcpy((void *) &p2, pin+sizeof(p1)-1, sizeof(p2)-1);
+				set_static_p2((char *) &p2);
+			}
 		}
 		else
 		{
