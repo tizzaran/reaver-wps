@@ -65,8 +65,8 @@ enum wps_result do_wps_exchange()
 	{
 		packet = next_packet(&header);
 		if(packet == NULL)
-		{
-			break;
+		{	
+			continue;
 		}
 
 		packet_type = process_packet(packet, &header);
@@ -140,7 +140,7 @@ enum wps_result do_wps_exchange()
 	 */
 	if(got_nack)
 	{
-		/* The AP is properly sending NACKs, so don't treat timeouts as pin failures. */
+		/* The AP is properly sending NACKs, so don't treat future timeouts as pin failures. */
 		set_timeout_is_nack(0);
 
 		/*
