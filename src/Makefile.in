@@ -89,8 +89,8 @@ install:
 	cp reaver.db $(CONFDIR)/reaver.db
 	if [ -e walsh ]; then cp walsh @bindir@/walsh; fi
 	if [ -e reaver ]; then cp reaver @bindir@/reaver; fi
-	ln -s @bindir@/walsh /usr/bin/walsh
-	ln -s @bindir@/reaver /usr/bin/reaver
+	if [ ! -e /usr/bin/walsh ]; then ln -s @bindir@/walsh /usr/bin/walsh; fi
+	if [ ! -e /usr/bin/reaver ]; then ln -s @bindir@/reaver /usr/bin/reaver; fi
 
 clean:
 	rm -f *~ *.o reaver walsh
