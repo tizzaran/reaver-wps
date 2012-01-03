@@ -54,6 +54,8 @@ struct globals
 
         enum key_state key_status;      /* Indicates the status of the key cracking: KEY1_WIP | KEY2_WIP | KEY_DONE */
 
+	int dh_small;			/* Use small DH keys to improve WPS speed */
+
 	int win7_compat;		/* Set to 1 to make WPS messages mimic Windows 7 settings. */
 
         int delay;                      /* Seconds to sleep in between key attempts */
@@ -210,6 +212,8 @@ void set_static_p2(char *value);
 char *get_static_p2(void);
 void set_win7_compat(int value);
 int get_win7_compat(void);
+void set_dh_small(int value);
+int get_dh_small(void);
 void set_nack_reason(enum nack_code value);
 enum nack_code get_nack_reason();
 void set_handle(pcap_t *value);

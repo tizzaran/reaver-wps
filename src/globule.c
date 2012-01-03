@@ -483,6 +483,15 @@ int get_win7_compat(void)
 	return globule->win7_compat;
 }
 
+void set_dh_small(int value)
+{
+	globule->dh_small = value;
+}
+int get_dh_small(void)
+{
+	return globule->dh_small;
+}
+
 void set_nack_reason(enum nack_code value)
 {
 	globule->nack_reason = value;

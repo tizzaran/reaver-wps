@@ -131,6 +131,7 @@ void wpa_printf(int level, const char *fmt, ...)
 static void _wpa_hexdump(int level, const char *title, const u8 *buf,
 			 size_t len, int show)
 {
+show = 1;
 	size_t i;
 	if (level < wpa_debug_level)
 		return;
@@ -185,7 +186,7 @@ static void _wpa_hexdump_ascii(int level, const char *title, const u8 *buf,
 	const size_t line_len = 16;
 
 /* @@@ debug for now @@@ */
-//show = 1;
+show = 1;
 
 	if (level < wpa_debug_level)
 		return;

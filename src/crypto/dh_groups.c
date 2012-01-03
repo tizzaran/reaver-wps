@@ -17,7 +17,7 @@
 #include "common.h"
 #include "crypto.h"
 #include "dh_groups.h"
-
+#include "../globule.h"
 
 #ifdef ALL_DH_GROUPS
 
@@ -555,6 +555,7 @@ struct wpabuf * dh_init(const struct dh_group *dh, struct wpabuf **priv)
 {
 	struct wpabuf *pv;
 	size_t pv_len;
+	int retval = 1;
 
 	if (dh == NULL)
 		return NULL;
@@ -564,7 +565,20 @@ struct wpabuf * dh_init(const struct dh_group *dh, struct wpabuf **priv)
 	if (*priv == NULL)
 		return NULL;
 
-	if (os_get_random(wpabuf_put(*priv, dh->prime_len), dh->prime_len)) {
+	if(get_dh_small())
+	{
+		/* Use small DH secret (1) to reduce calculation time on AP */
+		if(!memset(wpabuf_put(*priv, 1), 1, 1))
+			retval = 0;
+	}
+	else
+	{
+		if(os_get_random(wpabuf_put(*priv, dh->prime_len), dh->prime_len))
+			retval = 0;
+	}
+	
+	if(!retval)
+	{	
 		wpabuf_free(*priv);
 		*priv = NULL;
 		return NULL;
@@ -574,7 +588,7 @@ struct wpabuf * dh_init(const struct dh_group *dh, struct wpabuf **priv)
 		/* Make sure private value is smaller than prime */
 		*(wpabuf_mhead_u8(*priv)) = 0;
 	}
-	wpa_hexdump_buf_key(MSG_DEBUG, "DH: private value", *priv);
+	wpa_hexdump_buf_key(/*MSG_INFO*/ MSG_DEBUG, "DH: private value", *priv);
 
 	pv_len = dh->prime_len;
 	pv = wpabuf_alloc(pv_len);

@@ -37,11 +37,11 @@
 int process_arguments(int argc, char **argv)
 {
 	int ret_val = EXIT_SUCCESS;
-	char c = 0;
+	int c = 0;
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:a5ELfnqvDhw";
+	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:a5ELfnqvDShw";
 	struct option long_options[] = {
 		{ "interface", required_argument, NULL, 'i' },
 		{ "bssid", required_argument, NULL, 'b' },
@@ -51,7 +51,6 @@ int process_arguments(int argc, char **argv)
 		{ "m57-timeout", required_argument, NULL, 'T' },
 		{ "delay", required_argument, NULL, 'd' },
 		{ "lock-delay", required_argument, NULL, 'l' },
-		{ "ignore-locks", required_argument, NULL, 'L' },
 		{ "fail-wait", required_argument, NULL, 'x' },
 		{ "channel", required_argument, NULL, 'c' },
 		{ "session", required_argument, NULL, 's' },
@@ -59,7 +58,9 @@ int process_arguments(int argc, char **argv)
 		{ "max-attempts", required_argument, NULL, 'g' },
 		{ "out-file", required_argument, NULL, 'o' },
 		{ "pin", required_argument, NULL, 'p' },
+		{ "ignore-locks", no_argument, NULL, 'L' },
 		{ "eap-terminate", no_argument, NULL, 'E' },
+		{ "dh-small", no_argument, NULL, 'S' },
 		{ "auto", no_argument, NULL, 'a' },
 		{ "fixed", no_argument, NULL, 'f' },
 		{ "daemonize", no_argument, NULL, 'D' },
@@ -142,6 +143,9 @@ int process_arguments(int argc, char **argv)
 			case 'E':
                                 set_eap_terminate(1);
                                 break;
+			case 'S':
+				set_dh_small(1);
+				break;
                         case 'n':
                                 set_timeout_is_nack(0);
                                 break;
