@@ -40,6 +40,7 @@ int main(int argc, char **argv)
 	struct wps_data *wps = NULL;
 
 	globule_init();
+	sql_init();
 	init_default_settings();
 
 	fprintf(stderr, "\nReaver v%s WiFi Protected Setup Attack Tool\n", PACKAGE_VERSION);
@@ -121,6 +122,8 @@ int main(int argc, char **argv)
 		cprintf(CRITICAL, "[-] Failed to recover WPA key\n");
 	}
 	
+	save_session();
+
 end:
 	globule_deinit();
 	return ret_val;
@@ -141,6 +144,8 @@ int usage(char *prog_name)
         fprintf(stderr, "\t-e, --essid=<ssid>              ESSID of the target AP\n");
         fprintf(stderr, "\t-c, --channel=<channel>         Set the 802.11 channel for the interface (implies -f)\n");
 	fprintf(stderr, "\t-o, --out-file=<file>           Send output to a log file [stdout]\n");
+	fprintf(stderr, "\t-s, --session=<file>            Restore a previous session file\n");
+	fprintf(stderr, "\t-a, --auto                      Auto detect the best advanced options for the target AP\n");
         fprintf(stderr, "\t-f, --fixed                     Disable channel hopping\n");
         fprintf(stderr, "\t-5, --5ghz                      Use 5GHz 802.11 channels\n");
         fprintf(stderr, "\t-v, --verbose                   Display non-critical warnings (-vv for more)\n");
@@ -159,7 +164,7 @@ int usage(char *prog_name)
         fprintf(stderr, "\t-L, --ignore-locks              Ignore locked state reported by the target AP\n");
         fprintf(stderr, "\t-E, --eap-terminate             Terminate each WPS session with an EAP FAIL packet\n");
         fprintf(stderr, "\t-n, --nack                      Target AP always sends a NACK [Auto]\n");
-	fprintf(stderr, "\t-w, --win7                      Report to the AP that we are a Windows 7 registrar [False]\n");
+	fprintf(stderr, "\t-w, --win7                      Mimic a Windows 7 registrar [False]\n");
 
         fprintf(stderr, "\nExample:\n\t%s -i mon0 -b 00:90:4C:C1:AC:21 -vv\n\n", prog_name);
 

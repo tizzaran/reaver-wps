@@ -66,6 +66,7 @@ void globule_deinit()
 		if(globule->pin) free(globule->pin);
 		if(globule->iface) free(globule->iface);
 		if(globule->ssid) free(globule->ssid);
+		if(globule->session) free(globule->session);
 		if(globule->static_p1) free(globule->static_p1);
 		if(globule->static_p2) free(globule->static_p2);
 		if(globule->fp) fclose(globule->fp);
@@ -91,6 +92,15 @@ int get_last_wps_state()
 {
 	return globule->last_wps_state;
 }
+
+void set_session(char *value)  
+{ 
+	globule->session = strdup(value);     
+}
+char *get_session()    
+{
+	return globule->session;  
+} 
 
 void set_p1_index(int index)
 {

@@ -1,36 +1,3 @@
-/*
- * Reaver - 80211 Functions
- * Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *
- *  In addition, as a special exception, the copyright holders give
- *  permission to link the code of portions of this program with the
- *  OpenSSL library under certain conditions as described in each
- *  individual source file, and distribute linked combinations
- *  including the two.
- *  You must obey the GNU General Public License in all respects
- *  for all of the code used other than OpenSSL. *  If you modify
- *  file(s) with this exception, you may extend this exception to your
- *  version of the file(s), but you are not obligated to do so. *  If you
- *  do not wish to do so, delete this exception statement from your
- *  version. *  If you delete this exception statement from all source
- *  files in the program, then also delete it here.
- */
-
 #include "80211.h"
 
 /*Reads the next packet from pcap_next() and validates the FCS. */
@@ -72,9 +39,11 @@ void read_ap_beacon()
         struct radio_tap_header *rt_header = NULL;
         struct dot11_frame_header *frame_header = NULL;
         struct beacon_management_frame *beacon = NULL;
-	int wait_time = 1, channel = 0;
+	int wait_time = 1, i = 0, argc = 0, channel = 0;
 	size_t tag_offset = 0;
 	time_t start_time = 0;
+	char *bssid = NULL, *ssid = NULL;
+	char **argv = NULL;
 
 	start_time = time(NULL);
 
@@ -107,6 +76,41 @@ void read_ap_beacon()
 					{
 						set_channel(channel);
 					}
+					
+					if(get_auto_detect_options())
+					{
+						bssid = (char *) mac2str(get_bssid(), ':');
+
+						if(bssid)
+						{
+							/* If we didn't get the SSID from the beacon packet, check the database */
+							if(get_ssid() == NULL)
+							{
+								ssid = get_db_ssid(bssid);
+								if(ssid)
+								{
+									set_ssid(ssid);
+									free(ssid);
+								}
+							}
+
+							argv = auto_detect_settings(bssid, &argc);
+							if(argc > 1 && argv != NULL)
+							{
+								/* Process the command line arguments */
+								process_arguments(argc, argv);
+
+								/* Clean up argument memory allocation */
+								for(i=0; i<argc; i++)
+								{
+									free(argv[i]);
+								}
+								free(argv);
+							}
+
+							free(bssid);
+						}
+					}
 
                                        	break;
 				}
@@ -122,8 +126,56 @@ void read_ap_beacon()
         }
 }
 
+/* Extracts the signal strength field (if any) from the packet's radio tap header */
+int8_t signal_strength(const u_char *packet, size_t len)
+{
+	int8_t ssi = 0;
+	int offset = sizeof(struct radio_tap_header);
+	struct radio_tap_header *header = NULL;
+
+	if(has_rt_header() && (len > (sizeof(struct radio_tap_header) + TSFT_SIZE + FLAGS_SIZE + RATE_SIZE + CHANNEL_SIZE + FHSS_FLAG)))
+	{
+		header = (struct radio_tap_header *) packet;
+
+		if((header->flags & SSI_FLAG) == SSI_FLAG)
+		{
+			if((header->flags & TSFT_FLAG) == TSFT_FLAG)
+			{
+				offset += TSFT_SIZE;
+			}
+
+			if((header->flags & FLAGS_FLAG) == FLAGS_FLAG)
+			{
+				offset += FLAGS_SIZE;
+			}
+	
+			if((header->flags & RATE_FLAG) == RATE_FLAG)
+			{
+				offset += RATE_SIZE;
+			}
+
+			if((header->flags & CHANNEL_FLAG) == CHANNEL_FLAG)
+			{
+				offset += CHANNEL_SIZE;
+			}
+
+			if((header->flags & FHSS_FLAG) == FHSS_FLAG)
+			{
+				offset += FHSS_FLAG;
+			}
+
+			if(offset < len)
+			{
+				ssi = (int8_t) packet[offset];
+			}
+		}
+	}
+
+	return ssi;
+}
+
 /* 
- * Determines if the target AP has locked its WPS state or not.
+ * Determines if the target AP has locked it's WPS state or not.
  * Returns 0 if not locked, 1 if locked.
  */
 int is_wps_locked()
@@ -140,7 +192,7 @@ int is_wps_locked()
 		packet = next_packet(&header);
         	if(packet == NULL)
 		{
-			continue;
+			break;
 		}
 
 		if(header.len >= MIN_BEACON_SIZE)

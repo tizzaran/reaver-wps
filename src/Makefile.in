@@ -1,15 +1,18 @@
 CC=@CC@
 LIBWPS_DIR=libwps
 INC=-I$(LIBWPS_DIR)
-LDFLAGS=$(LIBWPS_DIR)/*.o wps/*.o tls/bignum.o tls/libtls.a utils/libutils.a crypto/libcrypto.a lwe/libiw.a -lpcap -lm @LDFLAGS@
+LDFLAGS=$(LIBWPS_DIR)/*.o wps/*.o tls/bignum.o tls/libtls.a utils/libutils.a crypto/libcrypto.a lwe/libiw.a -lpcap -lm -lsqlite3 @LDFLAGS@
 CFLAGS=@CFLAGS@
 CONFDIR=@confdir@/@target@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 
-all: wpscrack
+all: wpsmon wpscrack
 
-wpscrack: libwps.o wps libiw argsparser.o globule.o init.o sigint.o sigalrm.o misc.o cracker.o
+wpsmon: wps libiw libwps.o argsparser.o globule.o init.o misc.o 80211.o iface.o
+	$(CC) $(CFLAGS) $(INC) wpsmon.c *.o $(LDFLAGS) -o walsh
+
+wpscrack: wps libiw libwps.o argsparser.o globule.o init.o sigint.o sigalrm.o misc.o cracker.o
 	$(CC) $(CFLAGS) $(INC) wpscrack.c *.o $(LDFLAGS) -o reaver
 
 libwps.o:
@@ -33,6 +36,9 @@ libiw:
 init.o:
 	$(CC) $(CFLAGS) init.c -c
 
+sql.o:
+	$(CC) $(CFLAGS) $(INC) sql.c -c
+
 crc.o:
 	$(CC) $(CFLAGS) crc.c -c
 
@@ -51,7 +57,10 @@ exchange.o: globule.o send.o sigalrm.o 80211.o
 send.o: globule.o builder.o sigalrm.o
 	$(CC) $(CFLAGS) send.c -c
 
-80211.o: globule.o builder.o crc.o
+session.o: globule.o
+	$(CC) $(CFLAGS) $(INC) session.c -c
+
+80211.o: globule.o sql.o builder.o crc.o
 	$(CC) $(CFLAGS) $(INC) 80211.c -c
 
 iface.o: globule.o
@@ -69,7 +78,7 @@ builder.o: globule.o
 pins.o: globule.o keys.o
 	$(CC) $(CFLAGS) pins.c -c
 
-cracker.o: globule.o init.o pins.o iface.o exchange.o 80211.o
+cracker.o: globule.o init.o pins.o iface.o exchange.o session.o 80211.o
 	$(CC) $(CFLAGS) $(INC) cracker.c -c
 
 globule.o:
@@ -77,11 +86,14 @@ globule.o:
 
 install:
 	if [ ! -d $(CONFDIR) ]; then mkdir $(CONFDIR); fi
+	cp reaver.db $(CONFDIR)/reaver.db
+	if [ -e walsh ]; then cp walsh @bindir@/walsh; fi
 	if [ -e reaver ]; then cp reaver @bindir@/reaver; fi
+	ln -s @bindir@/walsh /usr/bin/walsh
 	ln -s @bindir@/reaver /usr/bin/reaver
 
 clean:
-	rm -f *~ *.o reaver
+	rm -f *~ *.o reaver walsh
 	rm -rf *.cache config.status config.log
 
 cleanall: clean
@@ -95,4 +107,4 @@ cleanall: clean
 
 distclean: cleanall
 	rm -rf $(CONFDIR)
-	rm -f @bindir@/wpscrack /usr/bin/reaver
+	rm -f @bindir@/wpscrack @bindir@/walsh /usr/bin/reaver /usr/bin/walsh

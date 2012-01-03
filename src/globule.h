@@ -110,6 +110,8 @@ struct globals
 
 	FILE *fp;			/* Handle to log file */
 
+	char *session;			/* Path to session file */
+
         char *ssid;                     /* Target SSID */
 
         char *iface;                    /* Interface name */
@@ -132,6 +134,8 @@ void set_log_file(FILE *fp);
 FILE *get_log_file(void);
 void set_last_wps_state(int state);
 int get_last_wps_state();
+void set_session(char *value);   
+char *get_session();
 void set_p1_index(int index);
 int get_p1_index();
 void set_p2_index(int index);

@@ -1,36 +1,3 @@
-/*
- * Reaver - Main WPS pin cracking functions
- * Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *
- *  In addition, as a special exception, the copyright holders give
- *  permission to link the code of portions of this program with the
- *  OpenSSL library under certain conditions as described in each
- *  individual source file, and distribute linked combinations
- *  including the two.
- *  You must obey the GNU General Public License in all respects
- *  for all of the code used other than OpenSSL. *  If you modify
- *  file(s) with this exception, you may extend this exception to your
- *  version of the file(s), but you are not obligated to do so. *  If you
- *  do not wish to do so, delete this exception statement from your
- *  version. *  If you delete this exception statement from all source
- *  files in the program, then also delete it here.
- */
-
 #include "cracker.h"
 
 /* Brute force all possible WPS pins for a given access point */
@@ -48,12 +15,21 @@ void crack()
 		return;
 	}
 
+	if(get_max_pin_attempts() == -1)
+	{
+		cprintf(CRITICAL, "[X] ERROR: This device has been blacklisted and is not supported.\n");
+		return;
+	}
+
 	/* Initialize network interface */
 	set_handle(capture_init(get_iface()));
 
 	if(get_handle() != NULL)
 	{
 		randomize_pins();
+
+		/* Restore any previously saved session */
+		restore_session();
 
 		/* Convert BSSID to a string */
 		bssid = mac2str(get_bssid(), ':');
@@ -65,6 +41,13 @@ void crack()
 		cprintf(INFO, "[+] Waiting for beacon from %s\n", bssid);
 		read_ap_beacon();
 	
+		/* I'm fairly certian there's a reason I put this in twice. Can't remember what it was now though... */	
+		if(get_max_pin_attempts() == -1)
+		{
+			cprintf(CRITICAL, "[X] ERROR: This device has been blacklisted and is not supported.\n");
+			return;
+		}
+
 		/* If the channel number was successfully parsed by read_ap_beacon, switch over to that channel */
 		if(get_channel())
 		{
@@ -89,7 +72,7 @@ void crack()
 		/* Used to calculate pin attempt rates */
 		start_time = time(NULL);
 
-		/* Ensure the key status is set to KEY1_WIP */
+		/* If the key status hasn't been explicitly set by restore_session(), ensure that it is set to KEY1_WIP */
 		if(get_key_status() <= KEY1_WIP)
 		{
 			set_key_status(KEY1_WIP);
@@ -210,9 +193,10 @@ void crack()
 				sleep(get_fail_delay());
 			}
 
-			/* Display status every DISPLAY_PIN_COUNT loops */
+			/* Display status and save current session state every DISPLAY_PIN_COUNT loops */
 			if(loop_count == DISPLAY_PIN_COUNT)
 			{
+				save_session();
 				display_status(pin_count, start_time);
 				loop_count = 0;
 			}

@@ -41,7 +41,7 @@ int process_arguments(int argc, char **argv)
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:5ELfnqvDhw";
+	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:a5ELfnqvDhw";
 	struct option long_options[] = {
 		{ "interface", required_argument, NULL, 'i' },
 		{ "bssid", required_argument, NULL, 'b' },
@@ -54,11 +54,13 @@ int process_arguments(int argc, char **argv)
 		{ "ignore-locks", required_argument, NULL, 'L' },
 		{ "fail-wait", required_argument, NULL, 'x' },
 		{ "channel", required_argument, NULL, 'c' },
+		{ "session", required_argument, NULL, 's' },
 		{ "recurring-delay", required_argument, NULL, 'r' },
 		{ "max-attempts", required_argument, NULL, 'g' },
 		{ "out-file", required_argument, NULL, 'o' },
 		{ "pin", required_argument, NULL, 'p' },
 		{ "eap-terminate", no_argument, NULL, 'E' },
+		{ "auto", no_argument, NULL, 'a' },
 		{ "fixed", no_argument, NULL, 'f' },
 		{ "daemonize", no_argument, NULL, 'D' },
 		{ "5ghz", no_argument, NULL, '5' },
@@ -113,9 +115,15 @@ int process_arguments(int argc, char **argv)
 			case 'p':
 				parse_static_pin(optarg);
 				break;
+			case 's':       
+				set_session(optarg);   
+				break;
                         case 'L':
                                 set_ignore_locks(1);
                                 break;
+			case 'a':       
+				set_auto_detect_options(1); 
+				break;
 			case 'o':
 				set_log_file(fopen(optarg, "w"));
 				break;
@@ -205,6 +213,7 @@ void parse_static_pin(char *pin)
 		{
 			memcpy((void *) &p1, pin, sizeof(p1)-1);
 			set_static_p1((char *) &p1);
+			set_key_status(KEY2_WIP);
 
 			if(len > 4)
 			{
