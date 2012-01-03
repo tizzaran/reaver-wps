@@ -1678,7 +1678,9 @@ if(wps->wps->registrar != NULL)
 	case SEND_M2:
 		if (wps_get_dev_password(wps) < 0)
 		{
-			msg = wps_build_m2d(wps);
+			/* Don't send M2D messages */
+			msg = NULL;
+//			msg = wps_build_m2d(wps);
 //			printf("[+] Sending M2D message\n");
 		} else {
 			msg = wps_build_m2(wps);

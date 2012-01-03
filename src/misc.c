@@ -121,3 +121,20 @@ void daemonize(void)
 		}
 	}
 }
+
+/* Closes libpcap during sleep period to avoid stale packet data in pcap buffer */
+void pcap_sleep(int seconds)
+{
+	if(seconds > 0)
+	{
+		pcap_close(get_handle());
+		sleep(seconds);
+        	set_handle(capture_init(get_iface()));
+
+		if(!get_handle())
+		{
+			cprintf(CRITICAL, "[-] Failed to re-initialize interface '%s'\n", get_iface());
+		}
+	}
+}
+

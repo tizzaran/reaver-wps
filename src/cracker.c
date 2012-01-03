@@ -126,13 +126,13 @@ void crack()
 			 * Some APs may do brute force detection, or might not be able to handle an onslaught of WPS
 			 * registrar requests. Using a delay here can help prevent the AP from locking us out.
 			 */
-			sleep(get_delay());
+			pcap_sleep(get_delay());
 
 			/* Users may specify a delay after x number of attempts */
 			if((get_recurring_delay() > 0) && (sleep_count == get_recurring_delay_count()))
 			{
 				cprintf(VERBOSE, "[+] Entering recurring delay of %d seconds\n", get_recurring_delay());
-				sleep(get_recurring_delay());
+				pcap_sleep(get_recurring_delay());
 				sleep_count = 0;
 			}
 
@@ -148,7 +148,7 @@ void crack()
 				}
 
                                 cprintf(WARNING, "[!] WARNING: Detected AP rate limiting, waiting %d seconds before re-trying\n", get_lock_delay());
-				sleep(get_lock_delay());
+				pcap_sleep(get_lock_delay());
                         }
 
 			/* Initialize wps structure */
@@ -223,7 +223,7 @@ void crack()
 			{
 				cprintf(WARNING, "[!] WARNING: %d failed connections in a row\n", fail_count);
 				fail_count = 0;
-				sleep(get_fail_delay());
+				pcap_sleep(get_fail_delay());
 			}
 
 			/* Display status and save current session state every DISPLAY_PIN_COUNT loops */
