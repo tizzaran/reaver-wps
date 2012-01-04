@@ -92,49 +92,83 @@ void randomize_pins()
 
         srand(time(NULL));
 
-        while(i < P1_SIZE)
-        {
-		if(get_static_p1())
+	/* If the first half of the pin was not specified, generate a list of possible pins */
+	if(!get_static_p1())
+	{
+		/* 
+		 * Look for P1 keys statically marked as 'randomized'. These are pins that have been 
+		 * reported to be commonly used on some APs and should be tried first. 
+		 */
+		for(index=0, i=0; i<P1_SIZE; i++)
 		{
-			set_p1(i, get_static_p1());
-			k1[index].randomized = 1;
-			i++;
+			if(k1[i].randomized == 1)
+			{
+				set_p1(index, k1[i].key);
+				index++;
+			}
 		}
-		else
-		{
-                	index = (rand() % P1_SIZE);
-
-                	if(!k1[index].randomized)
-                	{
-                	        set_p1(i, k1[index].key);
-                	        k1[index].randomized = 1;
-                	        i++;
-                	}
+        
+		/* Randomize the rest of the P1 keys */
+		while(index < P1_SIZE)
+        	{
+        	        i = (rand() % P1_SIZE);
+	
+	                if(!k1[i].randomized)
+	                {
+	                        set_p1(index, k1[i].key);
+	                        k1[i].randomized = 1;
+	                        index++;
+			}
 		}
         }
-
-        i = 0;
-
-        while(i < P2_SIZE)
-        {
-		if(get_static_p2())
+	else
+	{
+		/* If the first half of the pin was specified by the user, only use that */
+		for(index=0; index<P1_SIZE; index++)
 		{
-			set_p2(i, get_static_p2());
-			k2[index].randomized = 1;
-			i++;
+			set_p1(index, get_static_p1());
+			k1[index].randomized = 1;
 		}
-		else
-		{
-                	index = (rand() % P2_SIZE);
+	}
 
-                	if(!k2[index].randomized)
+	/* If the second half of the pin was not specified, generate a list of possible pins */
+	if(!get_static_p2())
+	{
+		/* 
+		 * Look for P2 keys statically marked as 'randomized'. These are pins that have been 
+		 * reported to be commonly used on some APs and should be tried first. 
+		 */
+		for(index=0, i=0; i<P2_SIZE; i++)
+		{
+			if(k2[i].randomized == 1)
+			{
+				set_p2(index, k2[i].key);
+				index++;
+			}
+		}
+
+		/* Randomize the rest of the P2 keys */
+        	while(index < P2_SIZE)
+        	{
+                	i = (rand() % P2_SIZE);
+
+                	if(!k2[i].randomized)
                 	{
-                	        set_p2(i, k2[index].key);
-                	        k2[index].randomized = 1;
-                	        i++;
+                	        set_p2(index, k2[i].key);
+                	        k2[i].randomized = 1;
+                	        index++;
 			}
                 }
         }
+	else
+	{
+		/* If the second half of the pin was specified by the user, only use that */
+		for(index=0; index<P2_SIZE; index++)
+		{
+			set_p2(index, get_static_p2());
+			k2[index].randomized = 1;
+		}
+	}
 
         return;
 }
