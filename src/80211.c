@@ -257,39 +257,50 @@ int is_wps_locked()
 /* Deauths and re-associates a MAC address with the AP. Returns 0 on failure, 1 for success. */
 int reassociate()
 {
-	int tries = 0;
+	int tries = 0, retval = 0;
 
-	/* Deauth to void any previous association with the AP */
-	deauthenticate();
-
-	/* Try MAX_AUTH_TRIES times to authenticate to the AP */
-	do
+	if(!get_external_association())
 	{
-		authenticate();
-		tries++;
-	}
-	while((associate_recv_loop() != AUTH_OK) && (tries < MAX_AUTH_TRIES));
+		/* Deauth to void any previous association with the AP */
+		deauthenticate();
 
-	/* If authentication was successful, try MAX_AUTH_TRIES to associate with the AP */
-	if(tries < MAX_AUTH_TRIES)
-	{
-		tries = 0;
-		sleep(1);
-
+		/* Try MAX_AUTH_TRIES times to authenticate to the AP */
 		do
 		{
-			associate();
+			authenticate();
 			tries++;
 		}
-		while((associate_recv_loop() != ASSOCIATE_OK) && (tries < MAX_AUTH_TRIES));
-	}
+		while((associate_recv_loop() != AUTH_OK) && (tries < MAX_AUTH_TRIES));
 
-	if(tries < MAX_AUTH_TRIES)
+		/* If authentication was successful, try MAX_AUTH_TRIES to associate with the AP */
+		if(tries < MAX_AUTH_TRIES)
+		{
+			tries = 0;
+			sleep(1);
+
+			do
+			{
+				associate();
+				tries++;
+			}
+			while((associate_recv_loop() != ASSOCIATE_OK) && (tries < MAX_AUTH_TRIES));
+		}
+
+		if(tries < MAX_AUTH_TRIES)
+		{
+			retval = 1;
+		}
+		else
+		{
+			retval = 0;
+		}
+	}
+	else
 	{
-		return 1;
+		retval = 1;
 	}
 
-	return 0;
+	return retval;
 }
 
 /* Deauthenticate ourselves from the AP */

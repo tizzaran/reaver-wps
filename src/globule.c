@@ -492,6 +492,15 @@ int get_dh_small(void)
 	return globule->dh_small;
 }
 
+void set_external_association(int value)
+{
+	globule->external_association = value;
+}
+int get_external_association(void)
+{
+	return globule->external_association;
+}
+
 void set_nack_reason(enum nack_code value)
 {
 	globule->nack_reason = value;

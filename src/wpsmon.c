@@ -58,6 +58,9 @@ int main(int argc, char *argv[])
                 { 0, 0, 0, 0 }
         };
 
+	fprintf(stderr, "\nWalsh v%s WiFi Protected Setup Scan Tool\n", PACKAGE_VERSION);
+        fprintf(stderr, "Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>\n\n");
+
 	globule_init();
 	sql_init();
 	create_ap_table();
@@ -205,6 +208,7 @@ int main(int argc, char *argv[])
 
 		/* Do it. */
 		monitor(bssid, passive, source, channel, mode);
+		printf("\n");
 	}
 
 	ret_val = EXIT_SUCCESS;
@@ -331,7 +335,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 				}
 				else if(wps->version > 0)
 				{
-					cprintf(INFO, "%s %s\n", bssid, ssid);
+					cprintf(INFO, "%s (ESSID: %s)\n", bssid, ssid);
 				}
 
 				if(probe_sent)

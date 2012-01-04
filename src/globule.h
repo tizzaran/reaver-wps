@@ -56,6 +56,8 @@ struct globals
 
 	int dh_small;			/* Use small DH keys to improve WPS speed */
 
+	int external_association;	/* Use an external application to perform AP association  */
+
 	int win7_compat;		/* Set to 1 to make WPS messages mimic Windows 7 settings. */
 
         int delay;                      /* Seconds to sleep in between key attempts */
@@ -218,6 +220,8 @@ void set_win7_compat(int value);
 int get_win7_compat(void);
 void set_dh_small(int value);
 int get_dh_small(void);
+void set_external_association(int value);
+int get_external_association(void);
 void set_nack_reason(enum nack_code value);
 enum nack_code get_nack_reason();
 void set_handle(pcap_t *value);

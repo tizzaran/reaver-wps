@@ -140,13 +140,8 @@ void crack()
 			 * Some APs identify brute force attempts and lock themselves for a short period of time (typically 5 minutes).
 			 * Verify that the AP is not locked before attempting the next pin.
 			 */
-			while(is_wps_locked())
+			while(!get_ignore_locks() && is_wps_locked())
                         {
-				if(get_ignore_locks())
-				{
-					break;
-				}
-
                                 cprintf(WARNING, "[!] WARNING: Detected AP rate limiting, waiting %d seconds before re-trying\n", get_lock_delay());
 				pcap_sleep(get_lock_delay());
                         }
