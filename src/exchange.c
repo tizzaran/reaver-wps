@@ -39,7 +39,7 @@ enum wps_result do_wps_exchange()
 	struct pcap_pkthdr header;
 	const u_char *packet = NULL;
 	enum wps_type packet_type = UNKNOWN;
-	enum wps_result ret_val = UNKNOWN_ERROR;
+	enum wps_result ret_val = KEY_ACCEPTED;
 	int id_response_sent = 0, premature_timeout = 0, terminated = 0, got_nack = 0;
 	struct wps_data *wps = get_wps();
 
@@ -80,7 +80,6 @@ enum wps_result do_wps_exchange()
 				break;
 			/* If we receive an M5, then we got the first half of the pin */
 			case RXM5:
-				ret_val = KEY_ACCEPTED;
 				set_key_status(KEY2_WIP);
 			/* Fall through */
 			case RXM1:
@@ -91,12 +90,12 @@ enum wps_result do_wps_exchange()
 			case NACK:
 				got_nack = 1;
 				break;
+			case RXACK:
 			case TERMINATE:
 				terminated = 1;
 				break;
 			case RXM7:
 			case DONE:
-				ret_val = KEY_ACCEPTED;
 				set_key_status(KEY_DONE);
 				break;
 			default:
