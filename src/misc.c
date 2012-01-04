@@ -128,6 +128,7 @@ void pcap_sleep(int seconds)
 	if(seconds > 0)
 	{
 		pcap_close(get_handle());
+		set_handle(NULL);
 		sleep(seconds);
         	set_handle(capture_init(get_iface()));
 

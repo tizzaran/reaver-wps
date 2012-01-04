@@ -205,9 +205,6 @@ int main(int argc, char *argv[])
 
 		/* Do it. */
 		monitor(bssid, passive, source, channel, mode);
-
-		pcap_close(get_handle());
-		set_handle(NULL);
 	}
 
 	ret_val = EXIT_SUCCESS;

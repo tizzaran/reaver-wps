@@ -262,8 +262,11 @@ void crack()
 		}
 
                 if(bssid) free(bssid);
-		pcap_close(get_handle());
-		set_handle(NULL);
+		if(get_handle())
+		{
+			pcap_close(get_handle());
+			set_handle(NULL);
+		}
 	} 
 	else 
 	{
