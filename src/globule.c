@@ -518,3 +518,26 @@ struct wps_data *get_wps()
 {
 	return globule->wps;
 }
+
+void set_ap_rates(unsigned char *value, int len)
+{
+	if(globule->ap_rates)
+	{
+		free(globule->ap_rates);
+		globule->ap_rates = NULL;
+		globule->ap_rates_len = 0;
+	}
+
+	globule->ap_rates = malloc(len);
+	if(globule->ap_rates)
+	{
+		memcpy(globule->ap_rates, value, len);
+		globule->ap_rates_len = len;
+	}
+}
+
+unsigned char *get_ap_rates(int *len)
+{
+	*len = globule->ap_rates_len;
+	return globule->ap_rates;
+}

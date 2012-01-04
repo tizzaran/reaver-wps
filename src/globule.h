@@ -110,6 +110,10 @@ struct globals
 
         unsigned char mac[MAC_ADDR_LEN];                /* Source MAC address */
 
+	unsigned char *ap_rates;	/* Supported rates IE data, as reported by the AP */
+
+	int ap_rates_len;		/* Length of the supported rates IE data */
+
 	FILE *fp;			/* Handle to log file */
 
 	char *session;			/* Path to session file */
@@ -220,5 +224,7 @@ void set_handle(pcap_t *value);
 pcap_t *get_handle();
 void set_wps(struct wps_data *value);
 struct wps_data *get_wps();
+void set_ap_rates(unsigned char *value, int len);
+unsigned char *get_ap_rates(int *len);
 
 #endif

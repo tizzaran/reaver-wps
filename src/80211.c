@@ -274,6 +274,7 @@ int reassociate()
 	if(tries < MAX_AUTH_TRIES)
 	{
 		tries = 0;
+		sleep(1);
 
 		do
 		{
@@ -450,9 +451,9 @@ int associate_recv_loop()
                                		}
 					/* Did we get an association packet with a successful status? */
                                		else if((dot11_frame->fc.sub_type == SUBTYPE_ASSOCIATION) && (assoc_frame->status == ASSOCIATION_SUCCESS))
-                               		{
-                               		        ret_val = ASSOCIATE_OK;
-                               		        break;
+					{
+						ret_val = ASSOCIATE_OK;
+						break;
                                		}
 				}
                         }
@@ -522,7 +523,7 @@ int parse_beacon_tags(const u_char *packet, size_t len)
 {
 	char *ssid = NULL;
 	const u_char *tag_data = NULL;
-	unsigned char *ssid_ie = NULL, *channel_data = NULL;
+	unsigned char *ie = NULL, *channel_data = NULL;
 	size_t ie_len = 0, ie_offset = 0, tag_len = 0, tag_offset = 0;
 	int channel = 0;
 	struct radio_tap_header *rt_header = NULL;
@@ -538,20 +539,27 @@ int parse_beacon_tags(const u_char *packet, size_t len)
 		/* If no SSID was manually specified, parse and save the AP SSID */
 		if(get_ssid() == NULL)
 		{
-			ssid_ie = parse_ie_data(tag_data, tag_len, (uint8_t) SSID_TAG_NUMBER, &ie_len, &ie_offset);
-			if(ssid_ie)
+			ie = parse_ie_data(tag_data, tag_len, (uint8_t) SSID_TAG_NUMBER, &ie_len, &ie_offset);
+			if(ie)
 			{
 				/* Return data is not null terminated; allocate ie_len+1 and memcpy string */
 				ssid = malloc(ie_len+1);
 				if(ssid)
 				{
 					memset(ssid, 0, (ie_len+1));
-					memcpy(ssid, ssid_ie, ie_len);
+					memcpy(ssid, ie, ie_len);
 					set_ssid(ssid);
 					free(ssid);
 				}
 
-				free(ssid_ie);
+				free(ie);
+			}
+
+			ie = parse_ie_data(tag_data, tag_len, (uint8_t) RATES_TAG_NUMBER, &ie_len, &ie_offset);
+			if(ie)
+			{
+				set_ap_rates(ie, ie_len);
+				free(ie);
 			}
 		}
 

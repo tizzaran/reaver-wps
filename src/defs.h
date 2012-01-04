@@ -51,6 +51,7 @@
 #define TIMESTAMP_LEN		8
 #define MAC_ADDR_LEN    	6
 #define SSID_TAG_NUMBER		0
+#define RATES_TAG_NUMBER	1
 #define CHANNEL_TAG_NUMBER	3
 #define WPS_TAG_NUMBER		0xDD
 #define VENDOR_SPECIFIC_TAG	0xDD
