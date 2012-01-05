@@ -1676,21 +1676,22 @@ if(wps->wps->registrar != NULL)
 {
 	switch (wps->state) {
 	case SEND_M2:
-		if (wps_get_dev_password(wps) < 0)
-		{
-			msg = wps_build_m2d(wps);
+	case SEND_M2D:
+//		if (wps_get_dev_password(wps) < 0)
+//		{
+//			msg = wps_build_m2d(wps);
 //			printf("[+] Sending M2D message\n");
-		} else {
+//		} else {
 			msg = wps_build_m2(wps);
 //			printf("[+] Sending M2 message\n");
-		}
+//		}
 		*op_code = WSC_MSG;
 		break;
-	case SEND_M2D:
-		msg = wps_build_m2d(wps);
+//	case SEND_M2D:
+//		msg = wps_build_m2d(wps);
 //		printf("[+] Sending M2D message\n");
-		*op_code = WSC_MSG;
-		break;
+//		*op_code = WSC_MSG;
+//		break;
 	case SEND_M4:
 		msg = wps_build_m4(wps);
 //		printf("[+] Sending M4 message\n");
