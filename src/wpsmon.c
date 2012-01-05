@@ -254,7 +254,8 @@ void monitor(char *bssid, int passive, int source, int channel, int mode)
 		}
 	}
 
-	cprintf(INFO, "\nScanning for supported APs...\n\n");
+	cprintf(INFO, "BSSID                  Channel       WPS Version       WPS Locked        ESSID\n");
+	cprintf(INFO, "----------------------------------------------------------------------------------------------\n");
 
 	while((packet = next_packet(&header)))
 	{
@@ -274,6 +275,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 	char *bssid = NULL, *ssid = NULL;
 	int wps_parsed = 0, probe_sent = 0, channel = 0, rssi = 0;
 	static int channel_changed = 0;
+	char lock_display = 0;
 
 	wps = malloc(sizeof(struct libwps_data));
 	memset(wps, 0, sizeof(struct libwps_data));
@@ -335,7 +337,20 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 				}
 				else if(wps->version > 0)
 				{
-					cprintf(INFO, "%s (ESSID: %s)\n", bssid, ssid);
+					switch(wps->locked)
+					{
+						case UNSPECIFIED:
+							lock_display = '?';
+							break;
+						case WPSLOCKED:
+							lock_display = 'Y';
+							break;
+						case UNLOCKED:
+							lock_display = 'N';
+							break;
+					}
+
+					cprintf(INFO, "%17s      %d             %d.%d               %c                 %s\n", bssid, channel, (wps->version >> 4), (wps->version & 0x0F), lock_display, ssid);
 				}
 
 				if(probe_sent)

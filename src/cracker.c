@@ -142,11 +142,14 @@ void crack()
 			 */
 			for(ll_count=0; (get_ignore_locks() == 0 && is_wps_locked()); ll_count++)
                         {
-				/* Adaptive delay - keep incrementing it until the AP unlocks, then we'll have the right delay period next time */
-				if(ll_count > 0)
+				/* Adaptive delay - keep incrementing it until the AP unlocks, then we'll have the right delay period next time 
+				 * REMOVED by popular demand. Good idea, bad implementation; needs to be smarter about picking delays (and have
+				 * a manual override).
+				if(get_lock_delay() == DEFAULT_LOCK_DELAY && ll_count > 0)
 				{
 					set_lock_delay(get_lock_delay() + DEFAULT_LOCK_DELAY);
 				}
+				*/
 
                                 cprintf(WARNING, "[!] WARNING: Detected AP rate limiting, waiting %d seconds before re-trying\n", get_lock_delay());
 				pcap_sleep(get_lock_delay());

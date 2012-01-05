@@ -20,6 +20,13 @@
 
 #define LIBWPS_MAX_STR_LEN 256
 
+enum wps_locked_state
+{
+        UNLOCKED,
+        WPSLOCKED,
+        UNSPECIFIED
+};
+
 struct libwps_data
 {
         uint8_t version;

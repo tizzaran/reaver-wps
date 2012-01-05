@@ -17,6 +17,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include "libwps.h"
 
 #define WPS_TAG_NUMBER          0xDD
 #define WPS_VENDOR_ID           "\x00\x50\xF2\x04"
