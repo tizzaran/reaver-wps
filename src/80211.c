@@ -213,7 +213,7 @@ int8_t signal_strength(const u_char *packet, size_t len)
  */
 int is_wps_locked()
 {
-	int locked = 1;
+	int locked = 0;
 	struct libwps_data wps = { 0 };
 	struct pcap_pkthdr header;
         const u_char *packet = NULL;
@@ -239,9 +239,9 @@ int is_wps_locked()
 				{
 					if(parse_wps_parameters(packet, header.len, &wps))
 					{
-						if(wps.locked == 0)
+						if(wps.locked == WPSLOCKED)
 						{
-							locked = 0;
+							locked = 1;
 						}
 						break;
 					}

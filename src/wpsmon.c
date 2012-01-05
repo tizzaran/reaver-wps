@@ -318,7 +318,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 			{
 				wps_parsed = parse_wps_parameters(packet, header->len, wps);
 			}
-			
+	
 			if(!is_done(bssid))
 			{
 				if(frame_header->fc.sub_type == SUBTYPE_BEACON && 
@@ -350,7 +350,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 							break;
 					}
 
-					cprintf(INFO, "%17s      %d             %d.%d               %c                 %s\n", bssid, channel, (wps->version >> 4), (wps->version & 0x0F), lock_display, ssid);
+					cprintf(INFO, "%17s      %2d            %d.%d               %c                 %s\n", bssid, channel, (wps->version >> 4), (wps->version & 0x0F), lock_display, ssid);
 				}
 
 				if(probe_sent)

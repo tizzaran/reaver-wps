@@ -79,6 +79,7 @@ int parse_wps_tag(const u_char *tags, size_t len, struct libwps_data *wps)
 
 	/* Get the WPS IE data blob */
 	wps_ie_data = get_wps_data(tags, len, &wps_data_len);
+	wps->locked = UNSPECIFIED;
 
 	if(wps_ie_data)
 	{
