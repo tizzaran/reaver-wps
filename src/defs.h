@@ -84,7 +84,7 @@
 #define M57_MAX_TIMEOUT         1000000         /* uSeconds */
 #define DEFAULT_DELAY           1               /* Seconds */
 #define DEFAULT_TIMEOUT         5               /* Seconds */
-#define DEFAULT_LOCK_DELAY      315             /* Seconds */
+#define DEFAULT_LOCK_DELAY      60              /* Seconds */
 #define SEC_TO_US               1000000         /* uSeconds in a Second */
 
 #define TSFT_SIZE 		8

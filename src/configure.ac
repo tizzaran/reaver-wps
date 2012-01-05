@@ -1,9 +1,10 @@
-AC_INIT(reaver, 1.3)
+AC_INIT(reaver, 1.4 beta)
 
 AC_PROG_CC
 AC_LANG(C)
 
 CFLAGS="-Wall $CFLAGS"
+LDFLAGS="-ldl -lm -lpcap -lsqlite3 $LDFLAGS"
 CONFDIR="/etc"
 
 AC_CHECK_LIB(pcap, pcap_open_live, [], [echo "error: pcap library not found!"; exit -1])

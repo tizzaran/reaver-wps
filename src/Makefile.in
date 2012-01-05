@@ -1,7 +1,7 @@
 CC=@CC@
 LIBWPS_DIR=libwps
 INC=-I$(LIBWPS_DIR)
-LDFLAGS=$(LIBWPS_DIR)/*.o wps/*.o tls/bignum.o tls/libtls.a utils/libutils.a crypto/libcrypto.a lwe/libiw.a -lpcap -lm -lsqlite3 @LDFLAGS@
+LDFLAGS=$(LIBWPS_DIR)/*.o wps/*.o tls/bignum.o tls/libtls.a utils/libutils.a crypto/libcrypto.a lwe/libiw.a @LDFLAGS@
 CFLAGS=@CFLAGS@
 CONFDIR=@confdir@/@target@
 prefix=@prefix@
