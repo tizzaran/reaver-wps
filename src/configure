@@ -593,7 +593,6 @@ ac_includes_default="\
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 target
-confdir
 EGREP
 GREP
 CPP
@@ -2783,7 +2782,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 CFLAGS="-Wall $CFLAGS"
 LDFLAGS="-ldl -lm -lpcap -lsqlite3 $LDFLAGS"
-CONFDIR="/etc"
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcap_open_live in -lpcap" >&5
@@ -3323,13 +3321,7 @@ fi
 done
 
 
-cat >>confdefs.h <<_ACEOF
-#define CONF_DIR "${CONFDIR}/${PACKAGE_NAME}"
-_ACEOF
-
 cp confdefs.h config.h
-
-confdir=$CONFDIR
 
 target=$PACKAGE_NAME
 

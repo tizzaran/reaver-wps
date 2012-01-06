@@ -41,8 +41,11 @@
 #include "defs.h"
 #include "globule.h"
 
-#define BUSY_WAIT_PERIOD	100
+#ifndef REAVER_DATABASE
 #define REAVER_DATABASE		"/etc/reaver/reaver.db"
+#endif
+
+#define BUSY_WAIT_PERIOD	100
 #define SETTINGS_TABLE		"auto"
 #define HISTORY_TABLE		"history"
 #define AP_TABLE		"survey"

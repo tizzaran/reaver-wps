@@ -42,6 +42,10 @@
 #include "sql.h"
 #include "config.h"
 
+#ifndef CONF_DIR
+#define CONF_DIR	"/etc/reaver"
+#endif
+
 #define MAX_LINE_SIZE	128
 #define CONF_EXT	"wpc"
 
