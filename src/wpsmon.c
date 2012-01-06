@@ -339,13 +339,11 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 				{
 					switch(wps->locked)
 					{
-						case UNSPECIFIED:
-							lock_display = '?';
-							break;
 						case WPSLOCKED:
 							lock_display = 'Y';
 							break;
 						case UNLOCKED:
+						case UNSPECIFIED:
 							lock_display = 'N';
 							break;
 					}
