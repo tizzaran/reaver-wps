@@ -3,16 +3,16 @@ LIBWPS_DIR=libwps
 INC=-I$(LIBWPS_DIR)
 LDFLAGS=$(LIBWPS_DIR)/*.o wps/*.o tls/bignum.o tls/libtls.a utils/libutils.a crypto/libcrypto.a lwe/libiw.a @LDFLAGS@
 CFLAGS=@CFLAGS@
-CONFDIR=@confdir@/@target@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+CONFDIR=@sysconfdir@/@target@
 
-all: wpsmon wpscrack
+all: walsh reaver
 
-wpsmon: wps libiw libwps.o argsparser.o globule.o init.o misc.o 80211.o iface.o
+walsh: wps libiw libwps.o argsparser.o globule.o init.o misc.o 80211.o iface.o
 	$(CC) $(CFLAGS) $(INC) wpsmon.c *.o $(LDFLAGS) -o walsh
 
-wpscrack: wps libiw libwps.o argsparser.o globule.o init.o sigint.o sigalrm.o misc.o cracker.o
+reaver: wps libiw libwps.o argsparser.o globule.o init.o sigint.o sigalrm.o misc.o cracker.o
 	$(CC) $(CFLAGS) $(INC) wpscrack.c *.o $(LDFLAGS) -o reaver
 
 libwps.o:
@@ -90,8 +90,6 @@ install:
 	chmod a+rw $(CONFDIR)/reaver.db
 	if [ -e walsh ]; then cp walsh @bindir@/walsh; fi
 	if [ -e reaver ]; then cp reaver @bindir@/reaver; fi
-	if [ ! -e /usr/bin/walsh ]; then ln -s @bindir@/walsh /usr/bin/walsh; fi
-	if [ ! -e /usr/bin/reaver ]; then ln -s @bindir@/reaver /usr/bin/reaver; fi
 
 clean:
 	rm -f *~ *.o reaver walsh
@@ -108,4 +106,4 @@ cleanall: clean
 
 distclean: cleanall
 	rm -rf $(CONFDIR)
-	rm -f @bindir@/wpscrack @bindir@/walsh /usr/bin/reaver /usr/bin/walsh
+	rm -f @bindir@/reaver @bindir@/walsh
