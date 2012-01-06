@@ -142,8 +142,9 @@ void crack()
 			 */
 			while(get_ignore_locks() == 0 && is_wps_locked())
                         {
-                                cprintf(WARNING, "[!] WARNING: Detected AP rate limiting, waiting %d seconds before re-trying\n", get_lock_delay());
+                                cprintf(WARNING, "[!] WARNING: Detected AP rate limiting, waiting %d seconds before re-checking\n", get_lock_delay());
 				pcap_sleep(get_lock_delay());
+				
                         }
 
 			/* Initialize wps structure */

@@ -63,8 +63,10 @@ void sigint_handler(int x)
 	fflush(stdout);
 
 	/* Save our session */
-	save_session();
-	cprintf(INFO, "[+] Session saved.\n");
+	if(save_session())
+	{
+		cprintf(INFO, "[+] Session saved.\n");
+	}
 
 	/* Clean up and get out */
 	globule_deinit();
