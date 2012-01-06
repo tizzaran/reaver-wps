@@ -35,7 +35,7 @@
 
 int main(int argc, char *argv[])
 {
-	char c = 0;
+	int c = 0;
 	FILE *fp = NULL;
 	int long_opt_index = 0, i = 0, channel = 0, passive = 0, mode = 0;
 	int source = INTERFACE, ret_val = EXIT_FAILURE;
