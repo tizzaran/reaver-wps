@@ -80,7 +80,8 @@ int restore_session()
 		/* If the user explicitly specified a session file, don't prompt them */
 		if(answer == 0)
 		{
-			cprintf(CRITICAL, "[?] Restore previous session? [n/Y] ");
+			/* Don't use cprintf here; else, if the output is sent to a file via -o, the user won't see this prompt. */
+			fprintf(stderr, "[?] Restore previous session? [n/Y] ");
 			answer = getc(stdin);
 		}
 	
