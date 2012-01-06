@@ -38,8 +38,8 @@ DESCRIPTION
 
 INSTALLATION
 
-	Reaver is only supported on the Linux platform, requires the libpcap library, and can be built and 
-	installed by running:
+	Reaver is only supported on the Linux platform, requires the libpcap and libsqlite3 libraries, and 
+	can be built and installed by running:
 
 		$ ./configure
 		$ make
@@ -50,6 +50,10 @@ INSTALLATION
 		# make distclean
 
 USAGE
+
+	To scan for WPS-enabled access points, use the included walsh utility:
+
+		# walsh -i mon0
 
 	Usually, the only required arguments to Reaver are the interface name and the BSSID of the target AP:
 
@@ -115,6 +119,11 @@ USAGE
 	place that will occur whenever these warning messages appear:
 
 		# reaver -i mon0 -b 00:01:02:03:04:05 --fail-wait=360
+
+KNOWN BUGS
+
+	o MAC spoofing does not work properly
+	o Some drivers don't work properly (check the wiki for the latest list)
 
 FILES
 
