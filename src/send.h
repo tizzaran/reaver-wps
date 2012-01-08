@@ -38,6 +38,7 @@
 #include "globule.h"
 #include "builder.h"
 #include "sigalrm.h"
+#include "misc.h"
 
 #define WFA_REGISTRAR "WFA-SimpleConfig-Registrar-1-0"
 

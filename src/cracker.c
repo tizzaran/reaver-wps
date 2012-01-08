@@ -62,7 +62,10 @@ void crack()
 		randomize_pins();
 
 		/* Restore any previously saved session */
-		restore_session();
+		if(get_static_p1() == NULL)
+		{
+			restore_session();
+		}
 
 		/* Convert BSSID to a string */
 		bssid = mac2str(get_bssid(), ':');
@@ -164,7 +167,7 @@ void crack()
 			}
 			else
 			{
-				cprintf(VERBOSE, "[+] Trying pin %s\n", pin);
+				cprintf(WARNING, "[+] Trying pin %s\n", pin);
 			}
 
 			/* 

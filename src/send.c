@@ -44,6 +44,7 @@ int send_eapol_start()
 
 	if(packet)
 	{
+		cprintf(VERBOSE, "[+] Sending EAPOL START request\n");
 		ret_val = send_packet(packet, packet_len);
 		free((void *) packet);
 	}
@@ -76,6 +77,7 @@ int send_identity_response()
 
 	if(packet)
 	{
+		cprintf(VERBOSE, "[+] Sending identity response\n");
 		ret_val = send_packet(packet, packet_len);
 		free((void *) packet);
 	}

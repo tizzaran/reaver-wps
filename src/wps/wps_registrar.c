@@ -24,6 +24,7 @@
 #include "common/ieee802_11_defs.h"
 #include "wps_i.h"
 #include "wps_dev_attr.h"
+#include "../misc.h"
 
 #define WPS_WORKAROUNDS
 
@@ -1676,16 +1677,15 @@ if(wps->wps->registrar != NULL)
 {
 	switch (wps->state) {
 	case SEND_M2:
-	case SEND_M2D:
-//		if (wps_get_dev_password(wps) < 0)
-//		{
-//			msg = wps_build_m2d(wps);
-//			printf("[+] Sending M2D message\n");
-//		} else {
+		if (wps_get_dev_password(wps) < 0)
+		{
+			msg = wps_build_m2d(wps);
+			cprintf(VERBOSE, "[+] Sending M2D message\n");
+		} else {
 			msg = wps_build_m2(wps);
-//			printf("[+] Sending M2 message\n");
-//		}
-		*op_code = WSC_MSG;
+			cprintf(VERBOSE, "[+] Sending M2 message\n");
+		}
+			*op_code = WSC_MSG;
 		break;
 //	case SEND_M2D:
 //		msg = wps_build_m2d(wps);
@@ -1694,27 +1694,27 @@ if(wps->wps->registrar != NULL)
 //		break;
 	case SEND_M4:
 		msg = wps_build_m4(wps);
-//		printf("[+] Sending M4 message\n");
+		cprintf(VERBOSE, "[+] Sending M4 message\n");
 		*op_code = WSC_MSG;
 		break;
 	case SEND_M6:
 		msg = wps_build_m6(wps);
-//		printf("[+] Sending M6 message\n");
+		cprintf(VERBOSE, "[+] Sending M6 message\n");
 		*op_code = WSC_MSG;
 		break;
 	case SEND_M8:
 		msg = wps_build_m8(wps);
-//		printf("[+] Sending M8 message\n");
+		cprintf(VERBOSE, "[+] Sending M8 message\n");
 		*op_code = WSC_MSG;
 		break;
 	case RECV_DONE:
 		msg = wps_build_wsc_ack(wps);
-//		printf("[+] Sending ACK\n");
+		cprintf(VERBOSE, "[+] Sending WSC ACK\n");
 		*op_code = WSC_ACK;
 		break;
 	case SEND_WSC_NACK:
 		msg = wps_build_wsc_nack(wps);
-//		printf("[+] Sending NACK\n");
+		cprintf(VERBOSE, "[+] Sending WSC NACK\n");
 		*op_code = WSC_NACK;
 		break;
 	default:
