@@ -502,6 +502,7 @@ enum encryption_type supported_encryption(const u_char *packet, size_t len)
 			if(tag_data && vlen > 0)
 			{
 				enc = WPA;
+				free(tag_data);
 			}
 			else
 			{
@@ -518,6 +519,7 @@ enum encryption_type supported_encryption(const u_char *packet, size_t len)
 							enc = WPA;
 							break;
 						}
+						free(tag_data);
 					}
 
 					offset = tag_offset + voff + vlen;

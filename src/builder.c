@@ -388,6 +388,7 @@ const void *build_eap_packet(const void *payload, uint16_t payload_len, size_t *
 		free((void *) snap_packet);
 		free((void *) eap_header);
 		free((void *) dot1x_header);
+		if(wfa_header) free((void *) wfa_header);
 	}
 
 	return buf;

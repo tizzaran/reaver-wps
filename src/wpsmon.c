@@ -282,7 +282,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 
 	if(packet == NULL || header == NULL || header->len < MIN_BEACON_SIZE)
         {
-                return;
+                goto end;
         }
 
 	rt_header = (struct radio_tap_header *) radio_header(packet, header->len);
@@ -291,7 +291,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 	/* If a specific BSSID was specified, only parse packets from that BSSID */
 	if(!is_target(frame_header))
 	{
-		return;
+		goto end;
 	}
 
 	set_ssid(NULL);
@@ -378,7 +378,8 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 		bssid = NULL;
 	}
 
-	free(wps);
+end:
+	if(wps) free(wps);
 
 	return;
 }

@@ -59,6 +59,8 @@ int read_iface_mac()
 				set_mac((unsigned char *) &ifr.ifr_hwaddr.sa_data);
 				ret_val = 1;
 			}
+
+			free(eth);
 		}
 
 		close(sock);

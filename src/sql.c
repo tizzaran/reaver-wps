@@ -301,6 +301,10 @@ char **auto_detect_settings(char *bssid, int *argc)
 						i = 0;
 						break;
 					}
+					else if(argv != tmp)
+					{
+						free(tmp);
+					}
 
 					argv[i] = strdup(token);
 					i++;
