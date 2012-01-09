@@ -87,7 +87,7 @@ globule.o:
 install:
 	if [ ! -d $(CONFDIR) ]; then mkdir $(CONFDIR); fi
 	cp reaver.db $(CONFDIR)/reaver.db
-	chmod a+rw $(CONFDIR)/reaver.db
+	chmod -R a+rw $(CONFDIR)
 	if [ -e walsh ]; then cp walsh @bindir@/walsh; fi
 	if [ -e reaver ]; then cp reaver @bindir@/reaver; fi
 

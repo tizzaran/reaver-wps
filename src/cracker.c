@@ -213,6 +213,7 @@ void crack()
 					break;
 				/* Unexpected timeout or EAP failure...try this pin again */
 				default:
+					cprintf(VERBOSE, "[!] WPS transaction failed, re-trying last pin\n");
 					fail_count++;
 					break;
 			}
