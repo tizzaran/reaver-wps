@@ -80,7 +80,8 @@ enum wps_result do_wps_exchange()
 				break;
 			/* If we receive an M5, then we got the first half of the pin */
 			case RXM5:
-				set_key_status(KEY2_WIP);
+				if(get_key_status() == KEY1_WIP)
+					set_key_status(KEY2_WIP);
 			/* Fall through */
 			case RXM1:
 			case RXM3:
@@ -96,7 +97,10 @@ enum wps_result do_wps_exchange()
 				break;
 			case RXM7:
 			case DONE:
-				set_key_status(KEY_DONE);
+				if(get_key_status() == KEY2_WIP) 
+					set_key_status(KEY_DONE);
+				else
+					cprintf(VERBOSE, "[!] WARNING: Got packet type %d (0x%.2X), but haven't broken the first half of the pin yet!\n", packet_type, packet_type);
 				break;
 			default:
 				if(packet_type != 0)

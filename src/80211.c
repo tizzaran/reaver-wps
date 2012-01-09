@@ -579,7 +579,10 @@ int parse_beacon_tags(const u_char *packet, size_t len)
 		channel_data = parse_ie_data(tag_data, tag_len, (uint8_t) CHANNEL_TAG_NUMBER, &ie_len, &ie_offset);
 		if(channel_data)
 		{
-			memcpy((int *) &channel, channel_data, sizeof(int));
+			if(ie_len  == 1)
+			{
+				memcpy((int *) &channel, channel_data, ie_len);
+			}
 			free(channel_data);
 		}
 	}
