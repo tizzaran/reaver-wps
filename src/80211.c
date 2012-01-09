@@ -543,12 +543,12 @@ int parse_beacon_tags(const u_char *packet, size_t len)
 
 	rt_header = (struct radio_tap_header *) radio_header(packet, len);
 	tag_offset = rt_header->len + sizeof(struct dot11_frame_header) + sizeof(struct beacon_management_frame);
-	
+
 	if(tag_offset < len)
 	{
 		tag_len = (len - tag_offset);
 		tag_data = (const u_char *) (packet + tag_offset);
-	
+
 		/* If no SSID was manually specified, parse and save the AP SSID */
 		if(get_ssid() == NULL)
 		{
@@ -567,19 +567,19 @@ int parse_beacon_tags(const u_char *packet, size_t len)
 
 				free(ie);
 			}
+		}
 
-			ie = parse_ie_data(tag_data, tag_len, (uint8_t) RATES_TAG_NUMBER, &ie_len, &ie_offset);
-			if(ie)
-			{
-				set_ap_rates(ie, ie_len);
-				free(ie);
-			}
+		ie = parse_ie_data(tag_data, tag_len, (uint8_t) RATES_TAG_NUMBER, &ie_len, &ie_offset);
+		if(ie)
+		{
+			set_ap_rates(ie, ie_len);
+			free(ie);
 		}
 
 		channel_data = parse_ie_data(tag_data, tag_len, (uint8_t) CHANNEL_TAG_NUMBER, &ie_len, &ie_offset);
 		if(channel_data)
 		{
-			memcpy((int *) &channel, channel_data, ie_len);
+			memcpy((int *) &channel, channel_data, sizeof(int));
 			free(channel_data);
 		}
 	}
