@@ -359,7 +359,7 @@ enum wps_type process_wps_message(const void *data, size_t data_size)
 		
 		/* 
 		 * wps_registrar_process_msg processes the current message and sets state to
-		 * SEND_MX. Unless we need to send a NACK or the WPS exchange is complete,
+		 * SEND_MX. Unless we need to send a NACK/M2D or the WPS exchange is complete,
 		 * the RECV_MX value, will be one less than the current state value.
 		 */
 		switch(wps->state)
@@ -368,6 +368,7 @@ enum wps_type process_wps_message(const void *data, size_t data_size)
 				set_nack_reason(parse_nack(data, data_size));
 				/* Fall through */
 			case RECV_DONE:
+			case SEND_M2D:
 				type = wps->state;
 				break;
 			default:
