@@ -72,11 +72,9 @@ void read_ap_beacon()
         struct radio_tap_header *rt_header = NULL;
         struct dot11_frame_header *frame_header = NULL;
         struct beacon_management_frame *beacon = NULL;
-	int wait_time = 1, i = 0, argc = 0, channel = 0;
+	int wait_time = 1, channel = 0;
 	size_t tag_offset = 0;
 	time_t start_time = 0;
-	char *bssid = NULL, *ssid = NULL;
-	char **argv = NULL;
 
 	start_time = time(NULL);
 
@@ -105,44 +103,10 @@ void read_ap_beacon()
 					channel = parse_beacon_tags(packet, header.len);
 					
 					/* If no channel was manually specified, switch to the AP's current channel */
-					if(!get_fixed_channel() && get_auto_channel_select() && channel > 0)
+					if(!get_fixed_channel() && get_auto_channel_select() && channel > 0 && channel != get_channel())
 					{
+						change_channel(channel);
 						set_channel(channel);
-					}
-					
-					if(get_auto_detect_options())
-					{
-						bssid = (char *) mac2str(get_bssid(), ':');
-
-						if(bssid)
-						{
-							/* If we didn't get the SSID from the beacon packet, check the database */
-							if(get_ssid() == NULL)
-							{
-								ssid = get_db_ssid(bssid);
-								if(ssid)
-								{
-									set_ssid(ssid);
-									free(ssid);
-								}
-							}
-
-							argv = auto_detect_settings(bssid, &argc);
-							if(argc > 1 && argv != NULL)
-							{
-								/* Process the command line arguments */
-								process_arguments(argc, argv);
-
-								/* Clean up argument memory allocation */
-								for(i=0; i<argc; i++)
-								{
-									free(argv[i]);
-								}
-								free(argv);
-							}
-
-							free(bssid);
-						}
 					}
 
                                        	break;
@@ -258,6 +222,9 @@ int is_wps_locked()
 int reassociate()
 {
 	int tries = 0, retval = 0;
+
+	/* Make sure we can still see beacons (also, read_ap_beaon will ensure we're on the right channel) */
+	read_ap_beacon();
 
 	if(!get_external_association())
 	{

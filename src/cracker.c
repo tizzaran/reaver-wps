@@ -76,18 +76,13 @@ void crack()
 		 */
 		cprintf(INFO, "[+] Waiting for beacon from %s\n", bssid);
 		read_ap_beacon();
+		process_auto_options();
 	
 		/* I'm fairly certian there's a reason I put this in twice. Can't remember what it was now though... */	
 		if(get_max_pin_attempts() == -1)
 		{
 			cprintf(CRITICAL, "[X] ERROR: This device has been blacklisted and is not supported.\n");
 			return;
-		}
-
-		/* If the channel number was successfully parsed by read_ap_beacon, switch over to that channel */
-		if(get_channel())
-		{
-			change_channel(get_channel());
 		}
 
 		/* This initial association is just to make sure we can successfully associate */
@@ -181,7 +176,6 @@ void crack()
 				{
 					assoc_fail_count = 0;
 					cprintf(CRITICAL, "[!] WARNING: Failed to associate with %s (ESSID: %s)\n", bssid, get_ssid());
-					next_channel();
 				}
 				else
 				{

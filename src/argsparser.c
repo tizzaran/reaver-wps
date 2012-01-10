@@ -235,3 +235,49 @@ void parse_static_pin(char *pin)
 		}
 	}
 }
+
+/* Process auto-applied options from the database. read_ap_beacon should be called before this. */
+void process_auto_options(void)
+{
+	char **argv = NULL;
+	int argc = 0, i = 0;
+	char *bssid = NULL, *ssid = NULL;
+
+	if(get_auto_detect_options())
+	{
+		bssid = (char *) mac2str(get_bssid(), ':');
+
+
+		if(bssid)
+		{
+			/* If we didn't get the SSID from the beacon packet, check the database */
+			if(get_ssid() == NULL)
+			{
+				ssid = get_db_ssid(bssid);
+				if(ssid)
+				{
+					set_ssid(ssid);
+					free(ssid);
+				}
+			}
+
+			argv = auto_detect_settings(bssid, &argc);
+			if(argc > 1 && argv != NULL)
+			{
+				/* Process the command line arguments */
+				process_arguments(argc, argv);
+
+				/* Clean up argument memory allocation */
+				for(i=0; i<argc; i++)
+				{
+					free(argv[i]);
+				}
+				free(argv);
+			}
+
+			free(bssid);
+		}
+	}
+
+	return;
+}

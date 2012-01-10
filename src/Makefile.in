@@ -46,7 +46,7 @@ keys.o:
 	$(CC) $(CFLAGS) keys.c -c
 
 argsparser.o: globule.o
-	$(CC) $(CFLAGS) argsparser.c -c
+	$(CC) $(CFLAGS) $(INC) argsparser.c -c
 
 sigint.o: globule.o
 	$(CC) $(CFLAGS) $(INC) sigint.c -c
