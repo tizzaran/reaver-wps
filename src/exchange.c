@@ -189,7 +189,7 @@ enum wps_result do_wps_exchange()
 	{
 		ret_val = EAP_FAIL;
 	}
-	else
+	else if(get_key_status() != KEY_DONE)
 	{
 		ret_val = UNKNOWN_ERROR;
 	}
@@ -201,16 +201,14 @@ enum wps_result do_wps_exchange()
  	 *
 	 * Stop the receive timer that is started by the termination transmission.
 	 */
-	if(got_nack)
-	{
-		send_wsc_nack();
-	}
+	send_wsc_nack();
+	stop_timer();
+	
 	if(get_eap_terminate() || ret_val == EAP_FAIL)
 	{
 		send_termination();
+		stop_timer();
 	}
-	
-	stop_timer();
 	
 	return ret_val;
 }

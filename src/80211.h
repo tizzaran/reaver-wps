@@ -47,6 +47,7 @@
 #define ASSOCIATE_OK            2
 
 #define ASSOCIATE_WAIT_TIME     1               /* Seconds */
+#define BEACON_WAIT_TIME	2		/* Seconds */
 #define ASSOCIATION_SUCCESS     0x0000
 #define AUTHENTICATION_SUCCESS  0x0000
 

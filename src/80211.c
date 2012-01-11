@@ -72,12 +72,13 @@ void read_ap_beacon()
         struct radio_tap_header *rt_header = NULL;
         struct dot11_frame_header *frame_header = NULL;
         struct beacon_management_frame *beacon = NULL;
-	int wait_time = 1, channel = 0;
+	int channel = 0;
 	size_t tag_offset = 0;
 	time_t start_time = 0;
 
+	set_ap_capability(0);
 	start_time = time(NULL);
-
+	
         while(get_ap_capability() == 0)
         {
                 packet = next_packet(&header);
@@ -114,8 +115,8 @@ void read_ap_beacon()
 			}
                 }
 
-		/* If we haven't seen any beacon packets from the target within wait_time seconds, try another channel */
-		if((time(NULL) - start_time) >= wait_time)
+		/* If we haven't seen any beacon packets from the target within BEACON_WAIT_TIME seconds, try another channel */
+		if((time(NULL) - start_time) >= BEACON_WAIT_TIME)
 		{
 			next_channel();
 			start_time = time(NULL);
