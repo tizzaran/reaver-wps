@@ -1,5 +1,5 @@
 /*
- * Walsh - Main and usage functions
+ * Wash - Main and usage functions
  * Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
                 { 0, 0, 0, 0 }
         };
 
-	fprintf(stderr, "\nWalsh v%s WiFi Protected Setup Scan Tool\n", PACKAGE_VERSION);
+	fprintf(stderr, "\nWash v%s WiFi Protected Setup Scan Tool\n", PACKAGE_VERSION);
         fprintf(stderr, "Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>\n\n");
 
 	globule_init();
@@ -408,9 +408,7 @@ void sigalrm_handler(int x)
 
 void usage(char *prog)
 {
-	fprintf(stderr, "\nWalsh v%s\n", PACKAGE_VERSION);
-
-	fprintf(stderr, "\nRequired Arguments:\n");
+	fprintf(stderr, "Required Arguments:\n");
 	fprintf(stderr, "\t-i, --interface=<iface>              Interface to capture packets on\n");
 	fprintf(stderr, "\t-f, --file [FILE1 FILE2 FILE3 ...]   Read packets from capture files\n");
 

@@ -7,10 +7,10 @@ CONFDIR=@sysconfdir@/@target@
 CFLAGS=-DCONF_DIR='"$(CONFDIR)"' -DREAVER_DATABASE='"$(CONFDIR)/reaver.db"' @CFLAGS@
 LDFLAGS=$(LIBWPS_DIR)/*.o wps/*.o tls/bignum.o tls/libtls.a utils/libutils.a crypto/libcrypto.a lwe/libiw.a @LDFLAGS@
 
-all: walsh reaver
+all: wash reaver
 
-walsh: wps libiw libwps.o argsparser.o globule.o init.o misc.o 80211.o iface.o
-	$(CC) $(CFLAGS) $(INC) wpsmon.c *.o $(LDFLAGS) -o walsh
+wash: wps libiw libwps.o argsparser.o globule.o init.o misc.o 80211.o iface.o
+	$(CC) $(CFLAGS) $(INC) wpsmon.c *.o $(LDFLAGS) -o wash
 
 reaver: wps libiw libwps.o argsparser.o globule.o init.o sigint.o sigalrm.o misc.o cracker.o
 	$(CC) $(CFLAGS) $(INC) wpscrack.c *.o $(LDFLAGS) -o reaver
@@ -84,15 +84,14 @@ cracker.o: globule.o init.o pins.o iface.o exchange.o session.o 80211.o
 globule.o:
 	$(CC) $(CFLAGS) globule.c -c 
 
-install:
+install: cleanbin
 	if [ ! -d $(CONFDIR) ]; then mkdir $(CONFDIR); fi
-	cp reaver.db $(CONFDIR)/reaver.db
-	chmod -R a+rw $(CONFDIR)
-	if [ -e walsh ]; then cp walsh @bindir@/walsh; fi
+	if [ ! -e $(CONFDIR)/reaver.db ]; then cp reaver.db $(CONFDIR)/reaver.db && chmod -R a+rw $(CONFDIR); fi
+	if [ -e wash ]; then cp wash @bindir@/wash; fi
 	if [ -e reaver ]; then cp reaver @bindir@/reaver; fi
 
 clean:
-	rm -f *~ *.o reaver walsh
+	rm -f *~ *.o reaver wash
 	rm -rf *.cache config.status config.log
 
 cleanall: clean
@@ -104,6 +103,8 @@ cleanall: clean
 	(cd $(LIBWPS_DIR) && make clean)
 	rm -f Makefile config.h
 
-distclean: cleanall
+cleanbin: 
+	rm -f @bindir@/reaver @bindir@/wash @bindir@/walsh
+
+distclean: cleanbin cleanall
 	rm -rf $(CONFDIR)
-	rm -f @bindir@/reaver @bindir@/walsh
