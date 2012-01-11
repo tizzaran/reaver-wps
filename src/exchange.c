@@ -145,9 +145,6 @@ enum wps_result do_wps_exchange()
 	 */
 	if(got_nack)
 	{
-		/* The AP is properly sending NACKs, so don't treat future timeouts as pin failures. */
-		set_timeout_is_nack(0);
-
 		/*
 		 * If a NACK message was received, then the current wps->state value will be
 		 * SEND_WSC_NACK, indicating that we need to reply with a NACK. So check the
@@ -155,6 +152,9 @@ enum wps_result do_wps_exchange()
 		 */
 		if(get_last_wps_state() == RECV_M5 || get_last_wps_state() == RECV_M7)
 		{
+			/* The AP is properly sending WSC_NACKs, so don't treat future timeouts as pin failures. */
+			set_timeout_is_nack(0);
+			
 			ret_val = KEY_REJECTED;
 		}
 		else
