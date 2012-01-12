@@ -85,7 +85,7 @@ globule.o:
 	$(CC) $(CFLAGS) globule.c -c 
 
 install: cleanbin
-	if [ ! -d $(CONFDIR) ]; then mkdir $(CONFDIR); fi
+	if [ ! -d $(CONFDIR) ]; then mkdir -p $(CONFDIR); fi
 	if [ ! -e $(CONFDIR)/reaver.db ]; then cp reaver.db $(CONFDIR)/reaver.db && chmod -R a+rw $(CONFDIR); fi
 	if [ -e wash ]; then cp wash @bindir@/wash; fi
 	if [ -e reaver ]; then cp reaver @bindir@/reaver; fi
