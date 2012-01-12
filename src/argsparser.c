@@ -37,7 +37,7 @@
 int process_arguments(int argc, char **argv)
 {
 	int ret_val = EXIT_SUCCESS;
-	int c = 0;
+	int c = 0, channel = 0;
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
@@ -102,7 +102,7 @@ int process_arguments(int argc, char **argv)
                                 set_m57_timeout(strtof(optarg, NULL) * SEC_TO_US);
                                 break;
                         case 'c':
-                                change_channel(strtod(optarg, NULL));
+				channel = strtod(optarg, NULL);
                                 set_fixed_channel(1);
                                 break;
                         case '5':
@@ -169,6 +169,11 @@ int process_arguments(int argc, char **argv)
                                 ret_val = EXIT_FAILURE;
                 }
         }
+
+	if(channel)
+	{
+		change_channel(channel);
+	}
 
 	return ret_val;
 }

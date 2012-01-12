@@ -124,7 +124,7 @@ int change_channel(int channel)
         {
                 perror("iw_sockets_open");
         }
-        else
+        else if(get_iface())
         {
                 /* Convert channel to a frequency */
                 iw_float2freq((double) channel, &(wrq.u.freq));
