@@ -40,7 +40,8 @@ enum wps_result do_wps_exchange()
 	const u_char *packet = NULL;
 	enum wps_type packet_type = UNKNOWN;
 	enum wps_result ret_val = KEY_ACCEPTED;
-	int id_response_sent = 0, premature_timeout = 0, terminated = 0, got_nack = 0;
+	int premature_timeout = 0, terminated = 0, got_nack = 0;
+	int id_response_sent = 0, m2_message_sent = 0, m4_message_sent = 0;
 	struct wps_data *wps = get_wps();
 
 	/* Initialize settings for this WPS exchange */
@@ -80,13 +81,26 @@ enum wps_result do_wps_exchange()
 				break;
 			/* If we receive an M5, then we got the first half of the pin */
 			case RXM5:
-				if(get_key_status() == KEY1_WIP)
-					set_key_status(KEY2_WIP);
-			/* Fall through */
+				if(m4_message_sent)
+				{
+					if(get_key_status() == KEY1_WIP)
+						set_key_status(KEY2_WIP);
+					send_msg();
+				}
+				break;
 			case RXM1:
+				if(id_response_sent)
+				{
+					send_msg();
+					m2_message_sent = 1;
+				}
+				break;
 			case RXM3:
-				/* Send a reply WPS message */
-				send_msg();
+				if(m2_message_sent)
+				{
+					send_msg();
+					m4_message_sent = 1;
+				}
 				break;
 			case NACK:
 				got_nack = 1;
