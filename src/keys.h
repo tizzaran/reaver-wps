@@ -39,7 +39,7 @@
 struct key
 {
         char *key;
-        int randomized;
+        int priority;
 };
 
 #endif

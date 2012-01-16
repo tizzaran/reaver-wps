@@ -59,7 +59,7 @@ void crack()
 
 	if(get_handle() != NULL)
 	{
-		randomize_pins();
+		generate_pins();
 
 		/* Restore any previously saved session */
 		if(get_static_p1() == NULL)

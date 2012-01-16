@@ -46,6 +46,6 @@ extern struct key k2[P2_SIZE];
 
 char *build_wps_pin();
 char *build_next_pin();
-void randomize_pins();
+void generate_pins();
 
 #endif
