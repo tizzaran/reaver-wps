@@ -1631,10 +1631,18 @@ struct wpabuf * wps_registrar_get_msg(struct wps_data *wps,
 		switch (type) 
 		{
 			case SEND_M2:
-				wps_get_dev_password(wps);
-				msg = wps_build_m2(wps);
-				cprintf(VERBOSE, "[+] Sending M2 message\n");
-				*op_code = WSC_MSG;
+				if(wps_get_dev_password(wps) >= 0)
+				{
+					msg = wps_build_m2(wps);
+					cprintf(VERBOSE, "[+] Sending M2 message\n");
+					*op_code = WSC_MSG;
+					break;
+				}
+				/* Fall through */
+			case SEND_WSC_NACK:
+				msg = wps_build_wsc_nack(wps);
+				cprintf(VERBOSE, "[+] Sending WSC NACK\n");
+				*op_code = WSC_NACK;
 				break;
 			case SEND_M4:
 				msg = wps_build_m4(wps);
@@ -1655,11 +1663,6 @@ struct wpabuf * wps_registrar_get_msg(struct wps_data *wps,
 				msg = wps_build_wsc_ack(wps);
 				cprintf(VERBOSE, "[+] Sending WSC ACK\n");
 				*op_code = WSC_ACK;
-				break;
-			case SEND_WSC_NACK:
-				msg = wps_build_wsc_nack(wps);
-				cprintf(VERBOSE, "[+] Sending WSC NACK\n");
-				*op_code = WSC_NACK;
 				break;
 			default:
 				wpa_printf(MSG_DEBUG, "WPS: Unsupported state %d for building "
