@@ -244,7 +244,6 @@ int reassociate()
 		if(tries < MAX_AUTH_TRIES)
 		{
 			tries = 0;
-			sleep(1);
 
 			do
 			{
