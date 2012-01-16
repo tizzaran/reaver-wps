@@ -104,5 +104,5 @@ clean:
 cleanbin: 
 	rm -f @bindir@/reaver @bindir@/wash @bindir@/walsh
 
-distclean: cleanbin cleanall
+distclean: cleanbin clean
 	rm -rf $(CONFDIR)
