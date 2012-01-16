@@ -1625,107 +1625,56 @@ static struct wpabuf * wps_build_wsc_nack(struct wps_data *wps)
 
 
 struct wpabuf * wps_registrar_get_msg(struct wps_data *wps,
-				      enum wsc_op_code *op_code)
+				      enum wsc_op_code *op_code,
+				      int type)
 {
 	struct wpabuf *msg = NULL;
 
-#ifdef CONFIG_WPS_UPNP
-	if (!wps->int_reg && wps->wps->wps_upnp) {
-		struct upnp_pending_message *p, *prev = NULL;
-		if (wps->ext_reg > 1)
-			wps_registrar_free_pending_m2(wps->wps);
-		p = wps->wps->upnp_msgs;
-		/* TODO: check pending message MAC address */
-		while (p && p->next) {
-			prev = p;
-			p = p->next;
-		}
-		if (p) {
-			wpa_printf(MSG_DEBUG, "WPS: Use pending message from "
-				   "UPnP");
-			if (prev)
-				prev->next = NULL;
-			else
-				wps->wps->upnp_msgs = NULL;
-			msg = p->msg;
-			switch (p->type) {
-			case WPS_WSC_ACK:
+	if(wps->wps->registrar != NULL)
+	{
+		switch (type) 
+		{
+			case SEND_M2:
+				wps_get_dev_password(wps);
+				msg = wps_build_m2(wps);
+				cprintf(VERBOSE, "[+] Sending M2 message\n");
+				*op_code = WSC_MSG;
+				break;
+			case SEND_M4:
+				msg = wps_build_m4(wps);
+				cprintf(VERBOSE, "[+] Sending M4 message\n");
+				*op_code = WSC_MSG;
+				break;
+			case SEND_M6:
+				msg = wps_build_m6(wps);
+				cprintf(VERBOSE, "[+] Sending M6 message\n");
+				*op_code = WSC_MSG;
+				break;
+			case SEND_M8:
+				msg = wps_build_m8(wps);
+				cprintf(VERBOSE, "[+] Sending M8 message\n");
+				*op_code = WSC_MSG;
+				break;
+			case RECV_DONE:
+				msg = wps_build_wsc_ack(wps);
+				cprintf(VERBOSE, "[+] Sending WSC ACK\n");
 				*op_code = WSC_ACK;
 				break;
-			case WPS_WSC_NACK:
+			case SEND_WSC_NACK:
+				msg = wps_build_wsc_nack(wps);
+				cprintf(VERBOSE, "[+] Sending WSC NACK\n");
 				*op_code = WSC_NACK;
 				break;
 			default:
-				*op_code = WSC_MSG;
+				wpa_printf(MSG_DEBUG, "WPS: Unsupported state %d for building "
+					   "a message", wps->state);
+				msg = NULL;
 				break;
-			}
-			os_free(p);
-			if (wps->ext_reg == 0)
-static struct wpabuf * wps_build_m2(struct wps_data *wps);	//wps/wps_registrar.c
-				wps->ext_reg = 1;
-			return msg;
 		}
 	}
-	if (wps->ext_reg) {
-		wpa_printf(MSG_DEBUG, "WPS: Using external Registrar, but no "
-			   "pending message available");
-		return NULL;
-	}
-#endif /* CONFIG_WPS_UPNP */
 
-if(wps->wps->registrar != NULL)
-{
-	switch (wps->state) {
-	case SEND_M2:
-		if (wps_get_dev_password(wps) < 0)
-		{
-			msg = wps_build_m2d(wps);
-			cprintf(VERBOSE, "[+] Sending M2D message\n");
-		} else {
-			msg = wps_build_m2(wps);
-			cprintf(VERBOSE, "[+] Sending M2 message\n");
-		}
-			*op_code = WSC_MSG;
-		break;
-//	case SEND_M2D:
-//		msg = wps_build_m2d(wps);
-//		printf("[+] Sending M2D message\n");
-//		*op_code = WSC_MSG;
-//		break;
-	case SEND_M4:
-		msg = wps_build_m4(wps);
-		cprintf(VERBOSE, "[+] Sending M4 message\n");
-		*op_code = WSC_MSG;
-		break;
-	case SEND_M6:
-		msg = wps_build_m6(wps);
-		cprintf(VERBOSE, "[+] Sending M6 message\n");
-		*op_code = WSC_MSG;
-		break;
-	case SEND_M8:
-		msg = wps_build_m8(wps);
-		cprintf(VERBOSE, "[+] Sending M8 message\n");
-		*op_code = WSC_MSG;
-		break;
-	case RECV_DONE:
-		msg = wps_build_wsc_ack(wps);
-		cprintf(VERBOSE, "[+] Sending WSC ACK\n");
-		*op_code = WSC_ACK;
-		break;
-	case SEND_WSC_NACK:
-		msg = wps_build_wsc_nack(wps);
-		cprintf(VERBOSE, "[+] Sending WSC NACK\n");
-		*op_code = WSC_NACK;
-		break;
-	default:
-		wpa_printf(MSG_DEBUG, "WPS: Unsupported state %d for building "
-			   "a message", wps->state);
-		msg = NULL;
-		break;
-	}
-}
-
-	if (*op_code == WSC_MSG && msg) {
+	if (*op_code == WSC_MSG && msg) 
+	{
 		/* Save a copy of the last message for Authenticator derivation
 		 */
 		wpabuf_free(wps->last_msg);

@@ -38,11 +38,10 @@ enum wps_result do_wps_exchange()
 {
 	struct pcap_pkthdr header;
 	const u_char *packet = NULL;
-	enum wps_type packet_type = UNKNOWN;
+	enum wps_type packet_type = UNKNOWN, last_msg = UNKNOWN;
 	enum wps_result ret_val = KEY_ACCEPTED;
 	int premature_timeout = 0, terminated = 0, got_nack = 0;
-	int id_response_sent = 0, m2_message_sent = 0, m4_message_sent = 0;
-	struct wps_data *wps = get_wps();
+	int id_response_sent = 0, tx_type = 0;
 
 	/* Initialize settings for this WPS exchange */
 	set_last_wps_state(0);
@@ -64,6 +63,13 @@ enum wps_result do_wps_exchange()
 	      !got_nack && 
               !premature_timeout)
 	{
+		tx_type = 0;
+
+		if(packet_type > last_msg)
+		{
+			last_msg = packet_type;
+		}
+
 		packet = next_packet(&header);
 		if(packet == NULL)
 		{	
@@ -79,50 +85,44 @@ enum wps_result do_wps_exchange()
 				send_identity_response();
 				id_response_sent = 1;
 				break;
-			/* If we receive an M5, then we got the first half of the pin */
-			case RXM5:
-				if(m4_message_sent)
-				{
-					if(get_key_status() == KEY1_WIP)
-						set_key_status(KEY2_WIP);
-					send_msg();
-				}
+			case M1:
+				cprintf(VERBOSE, "[+] Received M1 message\n");
+				tx_type = SEND_M2;
 				break;
-			case RXM1:
-				if(id_response_sent)
-				{
-					send_msg();
-					m2_message_sent = 1;
-				}
+			case M3:
+				cprintf(VERBOSE, "[+] Received M3 message\n");
+				tx_type = SEND_M4;
 				break;
-			case RXM3:
-				if(m2_message_sent)
-				{
-					send_msg();
-					m4_message_sent = 1;
-				}
+                        case M5:
+				cprintf(VERBOSE, "[+] Received M5 message\n");
+                                if(get_key_status() == KEY1_WIP) set_key_status(KEY2_WIP);
+                                tx_type = SEND_M6;
+                                break;
+			case M7:
+				cprintf(VERBOSE, "[+] Received M7 message\n");
+				/* Fall through */
+			case DONE:
+				if(get_key_status() == KEY2_WIP) set_key_status(KEY_DONE);
 				break;
 			case NACK:
+				cprintf(VERBOSE, "[+] Received WSC NACK\n");
 				got_nack = 1;
 				break;
-			case RXACK:
 			case TERMINATE:
 				terminated = 1;
-				break;
-			case RXM7:
-			case DONE:
-				if(get_key_status() == KEY2_WIP) 
-					set_key_status(KEY_DONE);
-				else
-					cprintf(VERBOSE, "[!] WARNING: Got packet type %d (0x%.2X), but haven't broken the first half of the pin yet!\n", packet_type, packet_type);
 				break;
 			default:
 				if(packet_type != 0)
 				{
-					cprintf(VERBOSE, "[!] WARNING: Out of order packet received, re-trasmitting last message\n");
-					send_msg();
+					cprintf(VERBOSE, "[!] WARNING: Out of order packet received (0x.2X), terminating transaction\n", packet_type);
+					terminated = 1;
 				}
 				break;
+		}
+
+		if(tx_type)
+		{
+			send_msg(tx_type);
 		}
 
 		/* Check to see if our receive timeout has expired */
@@ -164,7 +164,7 @@ enum wps_result do_wps_exchange()
 		 * SEND_WSC_NACK, indicating that we need to reply with a NACK. So check the
 		 * previous state to see what state we were in when the NACK was received.
 		 */
-		if(get_last_wps_state() == RECV_M5 || get_last_wps_state() == RECV_M7)
+		if(last_msg == M3 || last_msg == M5)
 		{
 			/* The AP is properly sending WSC_NACKs, so don't treat future timeouts as pin failures. */
 			set_timeout_is_nack(0);
@@ -185,7 +185,7 @@ enum wps_result do_wps_exchange()
 		 * Only treat the timeout as a NACK if this feature is enabled.
 		 */
 		if(get_timeout_is_nack() &&
-		  (wps->state == RECV_M5 || wps->state == RECV_M7))
+		  (last_msg == M3 || last_msg == M5))
 		{
 			ret_val = KEY_REJECTED;
 		}
@@ -365,6 +365,9 @@ enum wps_type process_wps_message(const void *data, size_t data_size)
 	const struct wpabuf *msg = NULL;
 	enum wps_type type = UNKNOWN;
 	struct wps_data *wps = get_wps();
+	unsigned char *element_data = NULL;
+        struct wfa_element_header element = { 0 };
+        int i = 0, header_size = sizeof(struct wfa_element_header);
 
 	/* Shove data into a wpabuf structure for processing */
 	msg = wpabuf_alloc_copy(data, data_size);
@@ -372,33 +375,38 @@ enum wps_type process_wps_message(const void *data, size_t data_size)
 	{
 		/* Process the incoming message */
 		wps_registrar_process_msg(wps, get_opcode(), msg);
-		
-		/* 
-		 * wps_registrar_process_msg processes the current message and sets state to
-		 * SEND_MX. Unless we need to send a NACK/M2D or the WPS exchange is complete,
-		 * the RECV_MX value, will be one less than the current state value.
-		 */
-		switch(wps->state)
-		{
-			case SEND_WSC_NACK:
-				set_nack_reason(parse_nack(data, data_size));
-				/* Fall through */
-			case RECV_DONE:
-			case SEND_M2D:
-				type = wps->state;
-				break;
-			default:
-				type = (wps->state - 1);
-				break;
-		}
-
 		wpabuf_free((struct wpabuf *) msg);
-	}
+	
+		/* Loop through until we hit the end of the data buffer */
+                for(i=0; i<data_size; i+=header_size)
+                {
+                        element_data = NULL;
+                        memset((void *) &element, 0, header_size);
 
-	if(wps->state == get_last_wps_state())
-	{
-		cprintf(VERBOSE, "[!] WARNING: Last message not processed properly, reverting state to previous message\n");
-		wps->state--;
+                        /* Get the element header data */
+                        memcpy((void *) &element, (data + i), header_size);
+                        element.type = htons(element.type);
+                        element.length = htons(element.length);
+
+                        /* Make sure the element length does not exceed the remaining buffer size */
+                        if(element.length <= (data_size - i - header_size))
+                        {
+                                element_data = (unsigned char *) (data + i + header_size);
+
+                                switch(element.type)
+                                {
+                                        case MESSAGE_TYPE:
+                                                type = (uint8_t) element_data[0];
+                                                break;
+                                        default:
+                                                break;
+                                }
+                        }
+
+                        /* Offset must include element length(s) */
+                        i += element.length;
+                }
+	
 	}
 
 	return type;

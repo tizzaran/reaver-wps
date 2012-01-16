@@ -268,7 +268,8 @@ enum wps_process_res wps_enrollee_process_msg(struct wps_data *wps,
 
 /* wps_registrar.c */
 struct wpabuf * wps_registrar_get_msg(struct wps_data *wps,
-				      enum wsc_op_code *op_code);
+				      enum wsc_op_code *op_code,
+				      int type);
 enum wps_process_res wps_registrar_process_msg(struct wps_data *wps,
 					       enum wsc_op_code op_code,
 					       const struct wpabuf *msg);

@@ -176,9 +176,9 @@ enum wps_process_res wps_process_msg(struct wps_data *wps,
  */
 struct wpabuf * wps_get_msg(struct wps_data *wps, enum wsc_op_code *op_code)
 {
-	if (wps->registrar)
-		return wps_registrar_get_msg(wps, op_code);
-	else
+	//if (wps->registrar)
+	//	return wps_registrar_get_msg(wps, op_code);
+//	else
 		return wps_enrollee_get_msg(wps, op_code);
 }
 

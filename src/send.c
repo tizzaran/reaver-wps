@@ -86,7 +86,7 @@ int send_identity_response()
 }
 
 /* Send the appropriate WPS message based on the current WPS state (globule->wps->state) */
-int send_msg()
+int send_msg(int type)
 {
 	int ret_val = 0;
 	const struct wpabuf *msg = NULL;
@@ -101,7 +101,7 @@ int send_msg()
 	 * Get the next message we need to send based on the data retrieved 
 	 * from wps_registrar_process_msg (see exchange.c).
 	 */
-        msg = wps_registrar_get_msg(wps, &opcode);
+        msg = wps_registrar_get_msg(wps, &opcode, type);
 	set_opcode(opcode);
         if(msg)
         {
@@ -150,7 +150,7 @@ void send_wsc_nack()
 	struct wps_data *wps = get_wps();
 
 	wps->state = SEND_WSC_NACK;
-	send_msg();
+	send_msg(SEND_WSC_NACK);
 }
 
 /* 
