@@ -42,6 +42,7 @@ enum wps_result do_wps_exchange()
 	enum wps_result ret_val = KEY_ACCEPTED;
 	int premature_timeout = 0, terminated = 0, got_nack = 0;
 	int id_response_sent = 0, tx_type = 0;
+	int m2_sent = 0, m4_sent = 0, m6_sent = 0;
 
 	/* Initialize settings for this WPS exchange */
 	set_last_wps_state(0);
@@ -87,22 +88,50 @@ enum wps_result do_wps_exchange()
 				break;
 			case M1:
 				cprintf(VERBOSE, "[+] Received M1 message\n");
-				tx_type = SEND_M2;
+				if(id_response_sent && !m2_sent)
+				{
+					tx_type = SEND_M2;
+					m2_sent = 1;
+				}
+				else
+				{
+					tx_type = SEND_WSC_NACK;
+					terminated = 1;
+				}
 				break;
 			case M3:
 				cprintf(VERBOSE, "[+] Received M3 message\n");
-				tx_type = SEND_M4;
+				if(m2_sent && !m4_sent)
+				{
+					tx_type = SEND_M4;
+					m4_sent = 1;
+				}
+				else
+				{
+					tx_type = SEND_WSC_NACK;
+					terminated = 1;
+				}
 				break;
                         case M5:
 				cprintf(VERBOSE, "[+] Received M5 message\n");
                                 if(get_key_status() == KEY1_WIP) set_key_status(KEY2_WIP);
-                                tx_type = SEND_M6;
+				if(m4_sent && !m6_sent)
+				{
+                                	tx_type = SEND_M6;
+					m6_sent = 1;
+				}
+				else
+				{
+					tx_type = SEND_WSC_NACK;
+					terminated = 1;
+				}
                                 break;
 			case M7:
 				cprintf(VERBOSE, "[+] Received M7 message\n");
 				/* Fall through */
 			case DONE:
 				if(get_key_status() == KEY2_WIP) set_key_status(KEY_DONE);
+				tx_type = SEND_WSC_NACK;
 				break;
 			case NACK:
 				cprintf(VERBOSE, "[+] Received WSC NACK\n");

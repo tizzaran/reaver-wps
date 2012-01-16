@@ -110,7 +110,7 @@ int main(int argc, char **argv)
 	{
 		wps = get_wps();
 
-		cprintf(VERBOSE,  		    "[+] Key cracked in %d seconds\n", (int) (end_time - start_time));
+		cprintf(VERBOSE,  		    "[+] Pin cracked in %d seconds\n", (int) (end_time - start_time));
 		cprintf(CRITICAL, 		    "[+] WPS PIN: '%s'\n", get_pin());
 		if(wps->key)      cprintf(CRITICAL, "[+] WPA PSK: '%s'\n", wps->key);
 		if(wps->essid)    cprintf(CRITICAL, "[+] AP SSID: '%s'\n", wps->essid);

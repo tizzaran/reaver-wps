@@ -335,7 +335,7 @@ void display_status(float pin_count, time_t start_time)
 		average = 0;
 	}
 
-	cprintf(INFO, "[+] %.2f%% complete @ %s (%d seconds/attempt)\n", percentage, time_s, average);
+	cprintf(INFO, "[+] %.2f%% complete @ %s (%d seconds/pin)\n", percentage, time_s, average);
 
 	return;
 }

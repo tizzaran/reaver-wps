@@ -88,85 +88,58 @@ char *build_next_pin()
 /* Randomize the p1 and p2 pin arrays */
 void randomize_pins()
 {
-        int i = 0, index = 0;
-
-        srand(time(NULL));
+        int i = 0;
+	char *pin = NULL;
 
 	/* If the first half of the pin was not specified, generate a list of possible pins */
 	if(!get_static_p1())
 	{
-		/* 
-		 * Look for P1 keys statically marked as 'randomized'. These are pins that have been 
-		 * reported to be commonly used on some APs and should be tried first. 
-		 */
-		for(index=0, i=0; i<P1_SIZE; i++)
-		{
-			if(k1[i].randomized == 1)
-			{
-				set_p1(index, k1[i].key);
-				index++;
-			}
-		}
-        
 		/* Randomize the rest of the P1 keys */
-		while(index < P1_SIZE)
+		for(i=0; i<P1_SIZE; i++)
         	{
-        	        i = (rand() % P1_SIZE);
-	
-	                if(!k1[i].randomized)
-	                {
-	                        set_p1(index, k1[i].key);
-	                        k1[i].randomized = 1;
-	                        index++;
+			pin = malloc(5);
+			if(pin)
+			{
+				memset(pin, 0, 5);
+				sprintf(pin, "%.4d", i);
+				set_p1(i, pin);
+				free(pin);
+				pin = NULL;
 			}
 		}
         }
 	else
 	{
 		/* If the first half of the pin was specified by the user, only use that */
-		for(index=0; index<P1_SIZE; index++)
+		for(i=0; i<P1_SIZE; i++)
 		{
-			set_p1(index, get_static_p1());
-			k1[index].randomized = 1;
+			set_p1(i, get_static_p1());
 		}
 	}
 
 	/* If the second half of the pin was not specified, generate a list of possible pins */
 	if(!get_static_p2())
 	{
-		/* 
-		 * Look for P2 keys statically marked as 'randomized'. These are pins that have been 
-		 * reported to be commonly used on some APs and should be tried first. 
-		 */
-		for(index=0, i=0; i<P2_SIZE; i++)
-		{
-			if(k2[i].randomized == 1)
-			{
-				set_p2(index, k2[i].key);
-				index++;
-			}
-		}
-
 		/* Randomize the rest of the P2 keys */
-        	while(index < P2_SIZE)
+        	for(i=0; i<P2_SIZE; i++)
         	{
-                	i = (rand() % P2_SIZE);
-
-                	if(!k2[i].randomized)
-                	{
-                	        set_p2(index, k2[i].key);
-                	        k2[i].randomized = 1;
-                	        index++;
+			pin = malloc(4);
+			if(pin)
+			{
+				memset(pin, 0, 4);
+				sprintf(pin, "%.3d", i);
+				set_p2(i, pin);
+				free(pin);
+				pin = NULL;
 			}
                 }
         }
 	else
 	{
 		/* If the second half of the pin was specified by the user, only use that */
-		for(index=0; index<P2_SIZE; index++)
+		for(i=0; i<P2_SIZE; i++)
 		{
-			set_p2(index, get_static_p2());
-			k2[index].randomized = 1;
+			set_p2(i, get_static_p2());
 		}
 	}
 

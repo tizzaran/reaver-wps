@@ -93,8 +93,6 @@ install: cleanbin
 clean:
 	rm -f *~ *.o reaver wash
 	rm -rf *.cache config.status config.log
-
-cleanall: clean
 	(cd utils && make clean)
 	(cd tls && make clean)
 	(cd crypto && make clean)
