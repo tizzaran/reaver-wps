@@ -1052,14 +1052,7 @@ static int wps_get_dev_password(struct wps_data *wps)
 	os_free(wps->dev_password);
 	wps->dev_password = NULL;
 
-	if (wps->pbc) {
-		wpa_printf(MSG_DEBUG, "WPS: Use default PIN for PBC");
-		pin = (const u8 *) "00000000";
-		pin_len = 8;
-	} else {
-		pin = wps_registrar_get_pin(wps->wps->registrar, wps->uuid_e,
-					    &pin_len);
-	}
+	pin = wps_registrar_get_pin(wps->wps->registrar, wps->uuid_e, &pin_len);
 	if (pin == NULL) {
 		wpa_printf(MSG_DEBUG, "WPS: No Device Password available for "
 			   "the Enrollee");
@@ -1477,6 +1470,7 @@ static struct wpabuf * wps_build_m4(struct wps_data *wps)
 	wpa_printf(MSG_DEBUG, "WPS: Building Message M4");
 
 	wpa_printf(MSG_DEBUG, "WPS: Dev Password Len: %d", wps->dev_password_len);
+	wpa_printf(MSG_DEBUG, "WPS: Dev Password: %s", wps->dev_password);
 
 	wps_derive_psk(wps, wps->dev_password, wps->dev_password_len);
 
@@ -1489,6 +1483,8 @@ static struct wpabuf * wps_build_m4(struct wps_data *wps)
 		wpabuf_free(plain);
 		return NULL;
 	}
+
+	wpa_printf(MSG_DEBUG, "Allocs OK, building M4 packet");
 
 	if (wps_build_version(msg) ||
 	    wps_build_msg_type(msg, WPS_M4) ||

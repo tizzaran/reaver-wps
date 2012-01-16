@@ -108,7 +108,7 @@ int send_msg(int type)
 		/* Get a pointer to the actual data inside of the wpabuf */
                 payload = (unsigned char *) wpabuf_head(msg);
                 payload_len = (uint16_t) msg->used;
-		
+
 		/* Build and send an EAP packet with the message payload */
                 packet = build_eap_packet(payload, payload_len, &packet_len);
 		if(packet)
