@@ -70,6 +70,7 @@ void globule_deinit()
 		if(globule->static_p1) free(globule->static_p1);
 		if(globule->static_p2) free(globule->static_p2);
 		if(globule->fp) fclose(globule->fp);
+		if(globule->exec_string) free(globule->exec_string);
 	
 		free(globule);
 	}
@@ -549,4 +550,22 @@ unsigned char *get_ap_rates(int *len)
 {
 	*len = globule->ap_rates_len;
 	return globule->ap_rates;
+}
+
+void set_exec_string(char *string)
+{
+	if(globule->exec_string)
+	{
+		free(globule->exec_string);
+		globule->exec_string = NULL;
+	}
+
+	if(string)
+	{
+		globule->exec_string = strdup(string);
+	}
+}
+char *get_exec_string(void)
+{
+	return globule->exec_string;
 }

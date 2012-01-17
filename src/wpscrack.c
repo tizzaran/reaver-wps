@@ -35,7 +35,7 @@
 
 int main(int argc, char **argv)
 {
-	int ret_val = EXIT_FAILURE;
+	int ret_val = EXIT_FAILURE, r = 0;
 	time_t start_time = 0, end_time = 0;
 	struct wps_data *wps = NULL;
 
@@ -115,6 +115,12 @@ int main(int argc, char **argv)
 		if(wps->key)      cprintf(CRITICAL, "[+] WPA PSK: '%s'\n", wps->key);
 		if(wps->essid)    cprintf(CRITICAL, "[+] AP SSID: '%s'\n", wps->essid);
 
+		/* Run user-supplied command */
+		if(get_exec_string())
+		{
+			r = system(get_exec_string());
+		}
+
 		ret_val = EXIT_SUCCESS;
 	}
 	else 
@@ -145,6 +151,7 @@ int usage(char *prog_name)
         fprintf(stderr, "\t-c, --channel=<channel>         Set the 802.11 channel for the interface (implies -f)\n");
 	fprintf(stderr, "\t-o, --out-file=<file>           Send output to a log file [stdout]\n");
 	fprintf(stderr, "\t-s, --session=<file>            Restore a previous session file\n");
+	fprintf(stderr, "\t-C, --exec=<command>            Execute the supplied command upon successful pin recovery\n");
 	fprintf(stderr, "\t-a, --auto                      Auto detect the best advanced options for the target AP\n");
         fprintf(stderr, "\t-f, --fixed                     Disable channel hopping\n");
         fprintf(stderr, "\t-5, --5ghz                      Use 5GHz 802.11 channels\n");

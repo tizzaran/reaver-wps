@@ -41,7 +41,7 @@ int process_arguments(int argc, char **argv)
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:aA5ELfnqvDShw";
+	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:C:aA5ELfnqvDShw";
 	struct option long_options[] = {
 		{ "interface", required_argument, NULL, 'i' },
 		{ "bssid", required_argument, NULL, 'b' },
@@ -58,6 +58,7 @@ int process_arguments(int argc, char **argv)
 		{ "max-attempts", required_argument, NULL, 'g' },
 		{ "out-file", required_argument, NULL, 'o' },
 		{ "pin", required_argument, NULL, 'p' },
+		{ "exec", required_argument, NULL, 'C' },
 		{ "no-associate", no_argument, NULL, 'A' },
 		{ "ignore-locks", no_argument, NULL, 'L' },
 		{ "eap-terminate", no_argument, NULL, 'E' },
@@ -119,6 +120,9 @@ int process_arguments(int argc, char **argv)
 				break;
 			case 's':       
 				set_session(optarg);   
+				break;
+			case 'C':
+				set_exec_string(optarg);
 				break;
 			case 'A':
 				set_external_association(1);

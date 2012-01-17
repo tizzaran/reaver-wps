@@ -115,7 +115,10 @@ enum wps_result do_wps_exchange()
 				break;
                         case M5:
 				cprintf(VERBOSE, "[+] Received M5 message\n");
-                                if(get_key_status() == KEY1_WIP) set_key_status(KEY2_WIP);
+                                if(get_key_status() == KEY1_WIP)
+				{
+					set_key_status(KEY2_WIP);
+				}
 				if(m4_sent && !m6_sent)
 				{
                                 	tx_type = SEND_M6;
@@ -131,7 +134,10 @@ enum wps_result do_wps_exchange()
 				cprintf(VERBOSE, "[+] Received M7 message\n");
 				/* Fall through */
 			case DONE:
-				if(get_key_status() == KEY2_WIP) set_key_status(KEY_DONE);
+				if(get_key_status() == KEY2_WIP) 
+				{
+					set_key_status(KEY_DONE);
+				}
 				tx_type = SEND_WSC_NACK;
 				break;
 			case NACK:

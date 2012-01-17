@@ -126,6 +126,8 @@ struct globals
 
         char *pin;                      /* Pointer to the recovered WPS pin value */
 
+	char *exec_string;		/* Pointer to user-supplied command to execute upon success */
+
         enum nack_code nack_reason;     /* Stores the nack code for the last received WSC_NACK message */
 
         pcap_t *handle;                 /* Pcap handle */
@@ -230,5 +232,7 @@ void set_wps(struct wps_data *value);
 struct wps_data *get_wps();
 void set_ap_rates(unsigned char *value, int len);
 unsigned char *get_ap_rates(int *len);
+void set_exec_string(char *string);
+char *get_exec_string(void);
 
 #endif
