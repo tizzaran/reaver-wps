@@ -83,6 +83,7 @@ enum wps_result do_wps_exchange()
 		switch(packet_type)
 		{
 			case IDENTITY_REQUEST:
+				cprintf(VERBOSE, "[+] Received identity request\n");
 				send_identity_response();
 				id_response_sent = 1;
 				break;

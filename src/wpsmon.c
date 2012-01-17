@@ -228,6 +228,7 @@ void monitor(char *bssid, int passive, int source, int channel, int mode)
 	struct sigaction act;
 	struct itimerval timer;
 	struct pcap_pkthdr header;
+	static int header_printed;
         const u_char *packet = NULL;
 
         memset(&act, 0, sizeof(struct sigaction));
@@ -254,8 +255,12 @@ void monitor(char *bssid, int passive, int source, int channel, int mode)
 		}
 	}
 
-	cprintf(INFO, "BSSID                  Channel       WPS Version       WPS Locked        ESSID\n");
-	cprintf(INFO, "----------------------------------------------------------------------------------------------\n");
+	if(!header_printed)
+	{
+		cprintf(INFO, "BSSID                  Channel       RSSI       WPS Version       WPS Locked        ESSID\n");
+		cprintf(INFO, "---------------------------------------------------------------------------------------------------------------\n");
+		header_printed = 1;
+	}
 
 	while((packet = next_packet(&header)))
 	{
@@ -319,12 +324,12 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 				wps_parsed = parse_wps_parameters(packet, header->len, wps);
 			}
 	
-			if(!is_done(bssid))
+			if(!is_done(bssid) && channel == get_channel())
 			{
 				if(frame_header->fc.sub_type == SUBTYPE_BEACON && 
 				   mode == SCAN && 
 				   !passive && 
-				   channel == get_channel() &&
+//				   channel == get_channel() &&
 				   should_probe(bssid))
 				{
 					send_probe_request(get_bssid(), get_ssid());
@@ -348,7 +353,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 							break;
 					}
 
-					cprintf(INFO, "%17s      %2d            %d.%d               %c                 %s\n", bssid, channel, (wps->version >> 4), (wps->version & 0x0F), lock_display, ssid);
+					cprintf(INFO, "%17s      %2d            %.2d        %d.%d               %c                 %s\n", bssid, channel, rssi, (wps->version >> 4), (wps->version & 0x0F), lock_display, ssid);
 				}
 
 				if(probe_sent)

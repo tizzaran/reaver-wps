@@ -207,7 +207,7 @@ void crack()
 					break;
 				/* Unexpected timeout or EAP failure...try this pin again */
 				default:
-					cprintf(VERBOSE, "[!] WPS transaction failed (code: 0x%X), re-trying last pin\n", result);
+					cprintf(VERBOSE, "[!] WPS transaction failed (code: 0x%.2X), re-trying last pin\n", result);
 					fail_count++;
 					break;
 			}
@@ -335,7 +335,7 @@ void display_status(float pin_count, time_t start_time)
 		average = 0;
 	}
 
-	cprintf(INFO, "[+] %.2f%% complete @ %s (%d seconds/pin)\n", percentage, time_s, average);
+	cprintf(INFO, "[+] %.2f%% complete @ %s {%d second(s)/pin}\n", percentage, time_s, average);
 
 	return;
 }
