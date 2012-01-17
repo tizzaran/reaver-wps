@@ -187,16 +187,27 @@ int save_session()
 	else
 	{
 		/* 
-		 * If the configuration directory exists, save the session file there; else, save it to the 
-		 * current working directory.
+		 * If a session file was explicitly specified, use that; else, check for the 
+		 * default session file name for this BSSID.
 		 */
-		if(configuration_directory_exists())
+		if(get_session())
 		{
-        		snprintf((char *) &file_name, FILENAME_MAX, "%s/%s.%s", CONF_DIR, bssid, CONF_EXT);
+			memcpy((char *) &file_name, get_session(), FILENAME_MAX-1);
 		}
 		else
-		{
-			snprintf((char *) &file_name, FILENAME_MAX, "%s.%s", bssid, CONF_EXT);
+		{	
+			/* 
+			 * If the configuration directory exists, save the session file there; else, save it to the 
+			 * current working directory.
+			 */
+			if(configuration_directory_exists())
+			{
+        			snprintf((char *) &file_name, FILENAME_MAX, "%s/%s.%s", CONF_DIR, bssid, CONF_EXT);
+			}
+			else
+			{
+				snprintf((char *) &file_name, FILENAME_MAX, "%s.%s", bssid, CONF_EXT);
+			}
 		}
 
 		/* Don't bother saving anything if nothing has been done */

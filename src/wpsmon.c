@@ -277,10 +277,9 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 	struct dot11_frame_header *frame_header = NULL;
 	struct libwps_data *wps = NULL;
 	enum encryption_type encryption = NONE;
-	char *bssid = NULL, *ssid = NULL;
+	char *bssid = NULL, *ssid = NULL, *lock_display = NULL;
 	int wps_parsed = 0, probe_sent = 0, channel = 0, rssi = 0;
 	static int channel_changed = 0;
-	char lock_display = 0;
 
 	wps = malloc(sizeof(struct libwps_data));
 	memset(wps, 0, sizeof(struct libwps_data));
@@ -329,7 +328,6 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 				if(frame_header->fc.sub_type == SUBTYPE_BEACON && 
 				   mode == SCAN && 
 				   !passive && 
-//				   channel == get_channel() &&
 				   should_probe(bssid))
 				{
 					send_probe_request(get_bssid(), get_ssid());
@@ -345,15 +343,15 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 					switch(wps->locked)
 					{
 						case WPSLOCKED:
-							lock_display = 'Y';
+							lock_display = YES;
 							break;
 						case UNLOCKED:
 						case UNSPECIFIED:
-							lock_display = 'N';
+							lock_display = NO;
 							break;
 					}
 
-					cprintf(INFO, "%17s      %2d            %.2d        %d.%d               %c                 %s\n", bssid, channel, rssi, (wps->version >> 4), (wps->version & 0x0F), lock_display, ssid);
+					cprintf(INFO, "%17s      %2d            %.2d        %d.%d               %s               %s\n", bssid, channel, rssi, (wps->version >> 4), (wps->version & 0x0F), lock_display, ssid);
 				}
 
 				if(probe_sent)
