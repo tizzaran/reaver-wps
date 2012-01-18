@@ -569,3 +569,12 @@ char *get_exec_string(void)
 {
 	return globule->exec_string;
 }
+
+void set_oo_send_nack(int value)
+{
+	globule->oo_send_nack = value;
+}
+int get_oo_send_nack(void)
+{
+	return globule->oo_send_nack;
+}

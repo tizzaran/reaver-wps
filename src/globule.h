@@ -58,6 +58,8 @@ struct globals
 
 	int external_association;	/* Use an external application to perform AP association  */
 
+	int oo_send_nack;		/* Set to 1 to send WSC_NACK when an out of order packet is received */
+
 	int win7_compat;		/* Set to 1 to make WPS messages mimic Windows 7 settings. */
 
         int delay;                      /* Seconds to sleep in between key attempts */
@@ -234,5 +236,7 @@ void set_ap_rates(unsigned char *value, int len);
 unsigned char *get_ap_rates(int *len);
 void set_exec_string(char *string);
 char *get_exec_string(void);
+void set_oo_send_nack(int value);
+int get_oo_send_nack(void);
 
 #endif

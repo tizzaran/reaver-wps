@@ -94,7 +94,7 @@ enum wps_result do_wps_exchange()
 					tx_type = SEND_M2;
 					m2_sent = 1;
 				}
-				else
+				else if(get_oo_send_nack())
 				{
 					tx_type = SEND_WSC_NACK;
 					terminated = 1;
@@ -107,7 +107,7 @@ enum wps_result do_wps_exchange()
 					tx_type = SEND_M4;
 					m4_sent = 1;
 				}
-				else
+				else if(get_oo_send_nack())
 				{
 					tx_type = SEND_WSC_NACK;
 					terminated = 1;
@@ -124,7 +124,7 @@ enum wps_result do_wps_exchange()
                                 	tx_type = SEND_M6;
 					m6_sent = 1;
 				}
-				else
+				else if(get_oo_send_nack())
 				{
 					tx_type = SEND_WSC_NACK;
 					terminated = 1;

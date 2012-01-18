@@ -41,7 +41,7 @@ int process_arguments(int argc, char **argv)
 	int long_opt_index = 0;
 	char bssid[MAC_ADDR_LEN] = { 0 };
 	char mac[MAC_ADDR_LEN] = { 0 };
-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:C:aA5ELfnqvDShw";
+	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:C:aA5ELfnqvDShwN";
 	struct option long_options[] = {
 		{ "interface", required_argument, NULL, 'i' },
 		{ "bssid", required_argument, NULL, 'b' },
@@ -61,6 +61,7 @@ int process_arguments(int argc, char **argv)
 		{ "exec", required_argument, NULL, 'C' },
 		{ "no-associate", no_argument, NULL, 'A' },
 		{ "ignore-locks", no_argument, NULL, 'L' },
+		{ "no-nacks", no_argument, NULL, 'N' },
 		{ "eap-terminate", no_argument, NULL, 'E' },
 		{ "dh-small", no_argument, NULL, 'S' },
 		{ "auto", no_argument, NULL, 'a' },
@@ -169,6 +170,9 @@ int process_arguments(int argc, char **argv)
 			case 'w':
 				set_win7_compat(1);
 				break;
+			case 'N':
+				set_oo_send_nack(0);
+				break;
                         default:
                                 ret_val = EXIT_FAILURE;
                 }
@@ -192,6 +196,7 @@ void init_default_settings(void)
         set_debug(INFO);
         set_auto_channel_select(1);
         set_timeout_is_nack(1);
+	set_oo_send_nack(1);
         set_wifi_band(BG_BAND);
 }
 

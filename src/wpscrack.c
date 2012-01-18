@@ -169,6 +169,7 @@ int usage(char *prog_name)
         fprintf(stderr, "\t-t, --timeout=<seconds>         Set the receive timeout period [%d]\n", DEFAULT_TIMEOUT);
         fprintf(stderr, "\t-T, --m57-timeout=<seconds>     Set the M5/M7 timeout period [%.2f]\n", fail_timeout);
 	fprintf(stderr, "\t-A, --no-associate              Do not associate with the AP (association must be done by another application)\n");
+	fprintf(stderr, "\t-N, --no-nacks                  Do not send NACK messages when out of order packets are received\n");
 	fprintf(stderr, "\t-S, --dh-small                  Use small DH keys to improve crack speed\n");
         fprintf(stderr, "\t-L, --ignore-locks              Ignore locked state reported by the target AP\n");
         fprintf(stderr, "\t-E, --eap-terminate             Terminate each WPS session with an EAP FAIL packet\n");
