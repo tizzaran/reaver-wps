@@ -169,6 +169,7 @@ enum wps_type
 	TERMINATE = -1,
 	UNKNOWN = 0,
 	IDENTITY_REQUEST = 1,
+	IDENTITY_RESPONSE = 2,
 	M1 = 0x04,
         M2 = 0x05,
         M3 = 0x07,

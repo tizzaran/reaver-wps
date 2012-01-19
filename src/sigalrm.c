@@ -58,7 +58,7 @@ void start_timer()
          * around forever to see if we get them or not, so use a short
          * timeout value when waiting for those messages.
 	 * Ignore this timeout if we know the AP responds with NACKs when
-	 * the wrong pin is supplied instead of not responding at all
+	 * the wrong pin is supplied instead of not responding at all.
          */
         if(get_timeout_is_nack() &&
 	  (wps->state == RECV_M5 || wps->state == RECV_M7))

@@ -84,7 +84,7 @@ enum wps_result do_wps_exchange()
 		{
 			case IDENTITY_REQUEST:
 				cprintf(VERBOSE, "[+] Received identity request\n");
-				send_identity_response();
+				tx_type = IDENTITY_RESPONSE;
 				id_response_sent = 1;
 				break;
 			case M1:
@@ -150,15 +150,29 @@ enum wps_result do_wps_exchange()
 			default:
 				if(packet_type != 0)
 				{
-					cprintf(VERBOSE, "[!] WARNING: Out of order packet received (0x.2X), terminating transaction\n", packet_type);
+					cprintf(VERBOSE, "[!] WARNING: Unexpected packet received (0x%.02X), terminating transaction\n", packet_type);
 					terminated = 1;
 				}
 				break;
 		}
 
-		if(tx_type)
+		if(tx_type == IDENTITY_RESPONSE)
+		{
+			send_identity_response();
+		}
+		else if(tx_type)
 		{
 			send_msg(tx_type);
+		}
+		/* 
+		 * If get_oo_send_nack is 0, then when out of order packets come, we don't
+		 * NACK them. However, this also means that we wait infinitely for the expected
+		 * packet, since the timer is started by send_msg. Manually start the timer to
+		 * prevent infinite loops.
+		 */
+		else if(packet_type != 0)
+		{
+			start_timer();
 		}
 
 		/* Check to see if our receive timeout has expired */
