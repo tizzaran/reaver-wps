@@ -264,14 +264,14 @@ void monitor(char *bssid, int passive, int source, int channel, int mode)
 
 	while((packet = next_packet(&header)))
 	{
-		parse_wps_settings(packet, &header, bssid, passive, mode);
+		parse_wps_settings(packet, &header, bssid, passive, mode, source);
 		memset((void *) packet, 0, header.len);
 	}
 
 	return;
 }
 
-void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *target, int passive, int mode)
+void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *target, int passive, int mode, int source)
 {
 	struct radio_tap_header *rt_header = NULL;
 	struct dot11_frame_header *frame_header = NULL;
@@ -323,7 +323,7 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 				wps_parsed = parse_wps_parameters(packet, header->len, wps);
 			}
 	
-			if(!is_done(bssid) && channel == get_channel())
+			if(!is_done(bssid) && (channel == get_channel() || source == PCAP_FILE))
 			{
 				if(frame_header->fc.sub_type == SUBTYPE_BEACON && 
 				   mode == SCAN && 

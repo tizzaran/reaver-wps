@@ -98,7 +98,7 @@ struct global_variables
 } wpsmon;
 
 void monitor(char *bssid, int passive, int source, int channel, int mode);
-void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *target, int passive, int mode);
+void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *target, int passive, int mode, int source);
 void send_probe_request(unsigned char *bssid, char *essid);
 int is_dup(unsigned char *bssid);
 void mark_bssid(unsigned char *bssid);
