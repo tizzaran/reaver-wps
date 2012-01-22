@@ -80,9 +80,12 @@ int restore_session()
 		/* If the user explicitly specified a session file, don't prompt them */
 		if(answer == 0)
 		{
+			bssid = mac2str(get_bssid(), ':');
+
 			/* Don't use cprintf here; else, if the output is sent to a file via -o, the user won't see this prompt. */
-			fprintf(stderr, "[?] Restore previous session? [n/Y] ");
+			fprintf(stderr, "[?] Restore previous session for %s? [n/Y] ", bssid);
 			answer = getc(stdin);
+			free(bssid);
 		}
 	
 		if(answer == 'y' || answer == 'Y' || answer == '\n')
