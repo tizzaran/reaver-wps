@@ -323,11 +323,10 @@ void parse_wps_settings(const u_char *packet, struct pcap_pkthdr *header, char *
 				wps_parsed = parse_wps_parameters(packet, header->len, wps);
 			}
 	
-			if(!is_done(bssid))
+			if(!is_done(bssid) && (get_channel() == channel || source == PCAP_FILE))
 			{
 				if(frame_header->fc.sub_type == SUBTYPE_BEACON && 
 				   mode == SCAN && 
-				   channel == get_channel() &&
 				   !passive && 
 				   should_probe(bssid))
 				{
@@ -420,6 +419,7 @@ void usage(char *prog)
 	fprintf(stderr, "\t-c, --channel=<num>                  Channel to listen on [auto]\n");
 	fprintf(stderr, "\t-o, --out-file=<file>                Write data to file\n");
 	fprintf(stderr, "\t-n, --probes=<num>                   Maximum number of probes to send to each AP in scan mode [%d]\n", DEFAULT_MAX_NUM_PROBES);
+	fprintf(stderr, "\t-D, --daemonize                      Daemonize wash\n");
 	fprintf(stderr, "\t-C, --ignore-fcs                     Ignore frame checksum errors\n");
 	fprintf(stderr, "\t-5, --5ghz                           Use 5GHz 802.11 channels\n");
 	fprintf(stderr, "\t-s, --scan                           Use scan mode\n");
