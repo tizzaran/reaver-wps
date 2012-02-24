@@ -188,8 +188,10 @@ enum wps_result do_wps_exchange()
 					set_eapol_start_count(0);
 					premature_timeout = 1;
 				}
-
-				send_eapol_start();
+				else
+				{
+					send_eapol_start();
+				}
 			}
 			else
 			{
