@@ -552,6 +552,28 @@ unsigned char *get_ap_rates(int *len)
 	return globule->ap_rates;
 }
 
+void set_ap_erates(unsigned char *value, int len)
+{	if(globule->ap_erates)
+	{
+		free(globule->ap_erates);
+		globule->ap_erates = NULL;
+		globule->ap_erates_len = 0;
+	}
+	
+	globule->ap_erates = malloc(len);
+	if(globule->ap_erates)
+	{
+		memcpy(globule->ap_erates, value, len);
+		globule->ap_erates_len = len;
+	}
+}
+
+unsigned char *get_ap_erates(int *len)
+{
+	*len = globule->ap_erates_len;
+	return globule->ap_erates;
+}
+
 void set_exec_string(char *string)
 {
 	if(globule->exec_string)

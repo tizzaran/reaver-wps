@@ -117,6 +117,10 @@ struct globals
 	unsigned char *ap_rates;	/* Supported rates IE data, as reported by the AP */
 
 	int ap_rates_len;		/* Length of the supported rates IE data */
+	
+	unsigned char * ap_erates;	/* Extended supported rates IE data, as reported by the AP */
+	
+	int ap_erates_len;		/* Length of the extended supported rates IE data */
 
 	FILE *fp;			/* Handle to log file */
 
@@ -234,6 +238,8 @@ void set_wps(struct wps_data *value);
 struct wps_data *get_wps();
 void set_ap_rates(unsigned char *value, int len);
 unsigned char *get_ap_rates(int *len);
+void set_ap_erates(unsigned char *value, int len);
+unsigned char *get_ap_erates(int *len);
 void set_exec_string(char *string);
 char *get_exec_string(void);
 void set_oo_send_nack(int value);

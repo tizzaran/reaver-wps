@@ -513,15 +513,18 @@ const void *build_supported_rates_tagged_parameter(size_t *len)
 	const void *buf = NULL, *supported_rates = NULL, *extended_rates = NULL;
 	unsigned char *srates = NULL;
 	int srates_tag_size = 0;
+	unsigned char *erates = NULL;
+	int erates_tag_size = 0;
         size_t buf_len = 0, srates_len = 0, erates_len = 0, offset = 0;
 
 	srates = get_ap_rates(&srates_tag_size);
         supported_rates = build_tagged_parameter(SRATES_TAG_NUMBER, srates_tag_size, &srates_len);
-	extended_rates = build_tagged_parameter(ERATES_TAG_NUMBER, ERATES_TAG_SIZE, &erates_len);
+        erates = get_ap_erates(&erates_tag_size);
+	extended_rates = build_tagged_parameter(ERATES_TAG_NUMBER, erates_tag_size, &erates_len);
 
         if(supported_rates && extended_rates)
         {
-                buf_len = srates_len + erates_len + srates_tag_size + ERATES_TAG_SIZE;
+                buf_len = srates_len + erates_len + srates_tag_size + erates_tag_size;
                 buf = malloc(buf_len);
                 if(buf)
                 {
@@ -534,7 +537,7 @@ const void *build_supported_rates_tagged_parameter(size_t *len)
 			offset += srates_tag_size;
 			memcpy((void *) ((char *) buf+offset), extended_rates, erates_len);
 			offset += erates_len;
-                        memcpy((void *) ((char *) buf+offset), EXTENDED_RATES_TAG, ERATES_TAG_SIZE);
+                        memcpy((void *) ((char *) buf+offset), erates, erates_tag_size);
                 }
         }
 
