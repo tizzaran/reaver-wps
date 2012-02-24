@@ -339,8 +339,8 @@ void *get(char *query, int *result_size, int *err_code)
 
         /* Prepare the SQL query */
         rc = sqlite3_prepare_v2(db,query,strlen(query),&stmt,NULL);
-        if(rc != SQLITE_OK){
-                *err_code = sqlite3_errcode(db);
+        if(stmt == NULL){
+                *err_code = rc;
                 return NULL;
         }
 
@@ -348,7 +348,7 @@ void *get(char *query, int *result_size, int *err_code)
         while(((rc = sqlite3_step(stmt)) != SQLITE_DONE) && (result == NULL)){
                 switch(rc){
 
-                        case SQLITE_ERROR:
+                        default:
                                 *err_code = sqlite3_errcode(db);
                                 sqlite3_finalize(stmt);
                                 return NULL;
