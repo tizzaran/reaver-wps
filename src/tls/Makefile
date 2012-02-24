@@ -32,6 +32,6 @@ LIB_OBJS= \
 
 
 libtls.a: $(LIB_OBJS)
-	$(AR) crT $@ $?
+	$(AR) cru $@ $?
 
 -include $(OBJS:%.o=%.d)

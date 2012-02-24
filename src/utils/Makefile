@@ -31,6 +31,6 @@ LIB_OBJS += eloop.o
 #LIB_OBJS += pcsc_funcs.o
 
 libutils.a: $(LIB_OBJS)
-	$(AR) crT $@ $?
+	$(AR) cru $@ $?
 
 -include $(OBJS:%.o=%.d)
