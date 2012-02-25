@@ -39,14 +39,23 @@ int send_eapol_start()
 	const void *packet = NULL;
 	size_t packet_len = 0;
 	int ret_val = 0;
+	int count = get_eapol_start_count();
 
-	packet = build_eapol_start_packet(&packet_len);
-
-	if(packet)
+	if(count == 0)
 	{
-		cprintf(VERBOSE, "[+] Sending EAPOL START request\n");
-		ret_val = send_packet(packet, packet_len);
-		free((void *) packet);
+		packet = build_eapol_start_packet(&packet_len);
+
+		if(packet)
+		{
+			cprintf(VERBOSE, "[+] Sending EAPOL START request\n");
+			ret_val = send_packet(packet, packet_len);
+			free((void *) packet);
+		}
+	}
+	else
+	{
+		cprintf(VERBOSE, "[+] Resending packet\n");
+		ret_val = resend_packet();
 	}
 
 	/* 
@@ -59,7 +68,7 @@ int send_eapol_start()
 	 * If it reaches EAPOL_START_MAX_TRIES, do_wps_exchange() will notify
 	 * the user.
 	 */
-	set_eapol_start_count(get_eapol_start_count() + 1);
+	set_eapol_start_count(count + 1);
 
 	return ret_val;
 }
@@ -163,6 +172,7 @@ int send_packet(const void *packet, size_t len)
 
 	if(pcap_inject(get_handle(), packet, len) == len)
 	{
+		set_last_packet(packet, len);
 		ret_val = 1;
 	}
 		
@@ -170,3 +180,21 @@ int send_packet(const void *packet, size_t len)
 
 	return ret_val;
 }
+
+/* Retransmit the last packet */
+int resend_packet()
+{
+	void * packet;
+	int len;
+	struct radio_tap_header *rt_header;
+	struct dot11_frame_header *frame_header;
+
+	packet = get_last_packet(&len);
+	rt_header = (struct radio_tap_header *) packet;
+	frame_header = (struct dot11_frame_header *) (packet + rt_header->len);
+
+	frame_header->fc.retry = 1;
+
+	return send_packet(packet, len);
+}
+

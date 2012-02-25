@@ -142,6 +142,10 @@ struct globals
 					 * wpa_supplicant's wps_data structure, needed for almost all wpa_supplicant
                                          * function calls.
                                          */
+
+	void *last_packet;		/* Last packet injected */
+
+	int last_packet_len;		/* Length of last packet injected */
 } *globule;
 
 int globule_init();
@@ -244,5 +248,7 @@ void set_exec_string(char *string);
 char *get_exec_string(void);
 void set_oo_send_nack(int value);
 int get_oo_send_nack(void);
+void set_last_packet(const void *packet, int len);
+void *get_last_packet(int *len);
 
 #endif

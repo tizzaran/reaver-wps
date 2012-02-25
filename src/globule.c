@@ -71,6 +71,7 @@ void globule_deinit()
 		if(globule->static_p2) free(globule->static_p2);
 		if(globule->fp) fclose(globule->fp);
 		if(globule->exec_string) free(globule->exec_string);
+		if(globule->last_packet) free(globule->last_packet);
 	
 		free(globule);
 	}
@@ -599,4 +600,29 @@ void set_oo_send_nack(int value)
 int get_oo_send_nack(void)
 {
 	return globule->oo_send_nack;
+}
+
+void set_last_packet(const void *packet, int len)
+{
+	if (packet == globule->last_packet)
+	{
+		globule->last_packet_len = len;
+		return;
+	}
+	if (globule->last_packet)
+	{
+		free(globule->last_packet);
+		globule->last_packet_len = 0;
+	}
+	globule->last_packet = malloc(len);
+	if (globule->last_packet)
+	{
+		memcpy(globule->last_packet, packet, len);
+		globule->last_packet_len = len;
+	}
+}
+void *get_last_packet(int *len)
+{
+	*len = globule->last_packet_len;
+	return globule->last_packet;
 }
