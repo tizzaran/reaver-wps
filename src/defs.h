@@ -167,6 +167,7 @@ enum nack_code
 
 enum wps_type
 {
+	DEAUTHENTICATED = -2,
 	TERMINATE = -1,
 	UNKNOWN = 0,
 	IDENTITY_REQUEST = 1,
@@ -323,6 +324,11 @@ struct authentication_management_frame
 	uint16_t algorithm;
 	uint16_t sequence;
 	uint16_t status;
+};
+
+struct deauthentication_management_frame
+{
+	uint16_t reason;
 };
 
 struct association_request_management_frame

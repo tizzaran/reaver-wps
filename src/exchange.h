@@ -43,8 +43,9 @@
 
 #define DATA_FRAME              0x02
 #define SUBTYPE_DATA            0x00
+#define SUBTYPE_DEAUTHENTICATION 0x0C
 
-#define MIN_PACKET_SIZE         (sizeof(struct radio_tap_header) + sizeof(struct dot11_frame_header) + sizeof(struct llc_header) + sizeof(struct dot1X_header))
+#define MIN_PACKET_SIZE         (sizeof(struct radio_tap_header) + sizeof(struct dot11_frame_header) + sizeof(struct deauthentication_management_frame))
 #define EAP_PACKET_SIZE         (MIN_PACKET_SIZE + sizeof(struct eap_header))
 #define WFA_PACKET_SIZE         (EAP_PACKET_SIZE + sizeof(struct wfa_expanded_header))
 

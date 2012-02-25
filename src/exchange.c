@@ -57,6 +57,7 @@ enum wps_result do_wps_exchange()
 	 * 	o The pin has been cracked
 	 * 	o An EAP_FAIL packet is received
 	 * 	o We receive a NACK message
+	 * 	o We are deauthenticated
 	 *	o We hit an unrecoverable receive timeout
 	 */
 	while((get_key_status() != KEY_DONE) && 
@@ -147,6 +148,10 @@ enum wps_result do_wps_exchange()
 			case TERMINATE:
 				terminated = 1;
 				break;
+			case DEAUTHENTICATED:
+				/* Probably our packets didn't reach the router and it gave up.  We are no longer associated. */
+				stop_timer();
+				return RX_TIMEOUT;
 			default:
 				if(packet_type != 0)
 				{
@@ -288,6 +293,7 @@ enum wps_type process_packet(const u_char *packet, struct pcap_pkthdr *header)
 {
 	struct radio_tap_header *rt_header = NULL;
 	struct dot11_frame_header *frame_header = NULL;
+	struct deauthentication_management_frame *deauthentication = NULL;
 	struct llc_header *llc = NULL;
 	struct dot1X_header *dot1x = NULL;
 	struct eap_header *eap = NULL;
@@ -310,13 +316,25 @@ enum wps_type process_packet(const u_char *packet, struct pcap_pkthdr *header)
 	rt_header = (struct radio_tap_header *) packet;
 	frame_header = (struct dot11_frame_header *) (packet+rt_header->len);
 
-	/* Does the BSSID/source address match our target BSSID? */
-	if(memcmp(frame_header->addr3, get_bssid(), MAC_ADDR_LEN) == 0)
+	/* Is this sent from our target BSSID to our MAC address? */
+	if(memcmp(frame_header->addr2, get_bssid(), MAC_ADDR_LEN) == 0 &&
+		memcmp(frame_header->addr1, get_mac(), MAC_ADDR_LEN) == 0) 
 	{
-		/* Is this a data packet sent to our MAC address? */
-		if(frame_header->fc.type == DATA_FRAME && 
-			frame_header->fc.sub_type == SUBTYPE_DATA && 
-			(memcmp(frame_header->addr1, get_mac(), MAC_ADDR_LEN) == 0)) 
+
+		/* Is this a deauthentication? */
+		if(frame_header->fc.type == MANAGEMENT_FRAME &&
+			frame_header->fc.sub_type == SUBTYPE_DEAUTHENTICATION)
+		{
+			type = DEAUTHENTICATED;
+			deauthentication = (struct deauthentication_management_frame *) (packet +
+							rt_header->len +
+							sizeof(struct dot11_frame_header)
+			);
+			cprintf(VERBOSE, "[!] Deauthenticated for reason 0x%x\n", deauthentication->reason);
+		}
+		/* Is this a data packet? */
+		else if(frame_header->fc.type == DATA_FRAME && 
+			frame_header->fc.sub_type == SUBTYPE_DATA) 
 		{
 			llc = (struct llc_header *) (packet +
 							rt_header->len +
